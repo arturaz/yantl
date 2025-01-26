@@ -1,14 +1,18 @@
 package yantl
 
 /** Validates values producing one or more errors. */
-trait Validator[-Input, +Error] {
+trait Validator[-Input, +Error] { self =>
+
+  /** Rules that are used to validate the input. */
+  def rules: IArray[ValidatorRule[Input, Error]]
 
   /** Validates the input.
     *
     * @return
     *   a [[Vector]] of errors. If the vector is empty, the input is valid.
     */
-  def validate(input: Input): Vector[Error]
+  def validate(input: Input): Vector[Error] =
+    rules.iterator.flatMap(_.validate(input)).toVector
 
   /** Validates the input, returning `None` if it is valid. */
   def validateAsOption(input: Input): Option[Vector[Error]] = {
@@ -37,37 +41,70 @@ trait Validator[-Input, +Error] {
   }
 
   def mapInput[NewInput](f: NewInput => Input): Validator[NewInput, Error] =
-    input => validate(f(input))
+    new {
+      override val rules = self.rules.map(_.mapInput(f))
+      override def validate(input: NewInput) = self.validate(f(input))
+    }
 
   def mapError[NewError](f: Error => NewError): Validator[Input, NewError] =
-    input => validate(input).map(f)
+    new {
+      override val rules = self.rules.map(_.mapError(f))
+      override def validate(input: Input) = self.validate(input).map(f)
+    }
 
   def mapBoth[NewInput, NewError](
-    inputMapper: NewInput => Input,
-    errorMapper: Error => NewError,
-  ): Validator[NewInput, NewError] =
-    input => validate(inputMapper(input)).map(errorMapper)
+      inputMapper: NewInput => Input,
+      errorMapper: Error => NewError
+  ): Validator[NewInput, NewError] = new {
+    override val rules = self.rules.map(_.mapBoth(inputMapper, errorMapper))
+    override def validate(input: NewInput) =
+      self.validate(inputMapper(input)).map(errorMapper)
+  }
 
   /** Combines two validators into one. */
   infix def and[OtherInput <: Input, OtherError](
-    that: Validator[OtherInput, OtherError]
-  ): Validator[OtherInput, Error | OtherError] =
-    input => this.validate(input) ++ that.validate(input)
+      that: Validator[OtherInput, OtherError]
+  ): Validator[OtherInput, Error | OtherError] = new {
+    override val rules = self.rules ++ that.rules
+    override def validate(input: OtherInput) =
+      self.validate(input) ++ that.validate(input)
+  }
 }
 object Validator {
-  def of[Input, Error](f: Input => Vector[Error]): Validator[Input, Error] =
-    input => f(input)
+  def of[Input, Error](
+      rules: ValidatorRule[Input, Error]*
+  ): Validator[Input, Error] = {
+    fromRules(IArray(rules*))
+  }
 
-  def fromRules[Input, Error](rules: Iterable[ValidatorRule[Input, Error]]): Validator[Input, Error] =
-    input => rules.iterator.flatMap(_.validate(input)).toVector
+  def fromRules[Input, Error](
+      rules: IArray[ValidatorRule[Input, Error]]
+  ): Validator[Input, Error] = {
+    val rules_ = rules
+    new {
+      override val rules = rules_
+    }
+  }
+
+  given [Input, Error]: Conversion[IArray[
+    ValidatorRule[Input, Error]
+  ], Validator[Input, Error]] =
+    fromRules
+
+  given [Input, Error]
+      : Conversion[ValidatorRule[Input, Error], Validator[Input, Error]] =
+    rule => fromRules(IArray(rule))
 
   /** Does not validate. */
-  val noOp: Validator[Any, Nothing] = _ => Vector.empty
+  val noOp: Validator[Any, Nothing] = fromRules(IArray.empty)
 
-  /** Converts a [[Vector]] of errors into an English string, assuming `Error.toString` returns an English string. */
+  /** Converts a [[Vector]] of errors into an English string, assuming
+    * `Error.toString` returns an English string.
+    */
   def errorsToString[Error](errors: Vector[Error]): String = {
     if (errors.sizeIs == 1) errors.head.toString
-    else s"""Multiple errors (${errors.size}) were encountered while validating a value:
+    else
+      s"""Multiple errors (${errors.size}) were encountered while validating a value:
         |
         |- ${errors.mkString("\n\n- ")}""".stripMargin
   }

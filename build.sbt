@@ -18,6 +18,7 @@ ThisBuild / tlSitePublishBranch := Some("main")
 
 ThisBuild / scalacOptions ++= Seq(
   "-Werror",
+  "-language:implicitConversions"
 )
 
 ThisBuild / scalaVersion := "3.3.4" // the default Scala
@@ -46,6 +47,10 @@ lazy val docs = project
   .settings(
     scalacOptions --= Seq(
       // Disable unused import warnings for the docs as they report false positives.
-      "-Wunused:imports",
+      "-Wunused:imports"
+    ),
+    libraryDependencies ++= Seq(
+      // Derivation of union types
+      "io.github.irevive" %%% "union-derivation-core" % "0.2.1"
     )
   )

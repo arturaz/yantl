@@ -1,6 +1,6 @@
 package yantl
 
-trait Newtype {
+trait Newtype { self =>
 
   /** The type of errors that can be encountered while validating a value. */
   type TError
@@ -14,18 +14,18 @@ trait Newtype {
   /** Allows requiring this companion object in `using` clauses. */
   transparent inline given instance: Newtype.WithType[TUnderlying, Type] = this
 
-  def validatorRules: IArray[ValidatorRule[TUnderlying, TError]] = IArray.empty
-
-  lazy val validator: Validator[TUnderlying, TError] = Validator.fromRules(validatorRules)
+  def validator: Validator[TUnderlying, TError] = Validator.noOp
 
   /** Validates the input using [[validators]]. */
   def validate(input: TUnderlying): Vector[TError] = validator.validate(input)
 
   /** Variant of [[validate]] that returns errors as a [[Vector]] of strings. */
-  def validateAsStrings(input: TUnderlying): Vector[String] = validator.validateAsStrings(input)
+  def validateAsStrings(input: TUnderlying): Vector[String] =
+    validator.validateAsStrings(input)
 
   /** Variant of [[validate]] that returns errors as a single English string. */
-  def validateAsString(input: TUnderlying): Option[String] = validator.validateAsString(input)
+  def validateAsString(input: TUnderlying): Option[String] =
+    validator.validateAsString(input)
 
   /** Creates a new instance of the wrapped type, validating it first.
     *
@@ -48,7 +48,8 @@ trait Newtype {
 
   /** Creates a new instance of the wrapped type, validating it first.
     *
-    * Should be used only in cases where the input is guaranteed to be valid, like in statically known values.
+    * Should be used only in cases where the input is guaranteed to be valid,
+    * like in statically known values.
     *
     * @throws IllegalArgumentException
     *   if there were errors
@@ -91,8 +92,9 @@ object Newtype {
     * ))
     * }}}
     */
-  trait ValidatedOf[TUnderlying_, TError_](override val validatorRules: IArray[ValidatorRule[TUnderlying_, TError_]])
-      extends Newtype {
+  trait ValidatedOf[TUnderlying_, TError_](
+      override val validator: Validator[TUnderlying_, TError_]
+  ) extends Newtype {
     type TUnderlying = TUnderlying_
     type TError = TError_
   }
@@ -104,7 +106,9 @@ object Newtype {
     * def doThingsWithStrings(using newType: Newtype.WithUnderlying[String]): newType.Type
     * }}}
     */
-  type WithUnderlying[TUnderlying_] = Newtype { type TUnderlying = TUnderlying_ }
+  type WithUnderlying[TUnderlying_] = Newtype {
+    type TUnderlying = TUnderlying_
+  }
 
   type WithUnderlyingAndError[TUnderlying_, TError_] = Newtype {
     type TUnderlying = TUnderlying_
@@ -123,8 +127,17 @@ object Newtype {
     type Type = TWrapper
   }
 
+  /** As [[WithType]] but for unvalidated newtypes. */
+  type WithUnvalidatedType[TUnderlying_, TWrapper] = Newtype &
+    WithoutValidation {
+      type TUnderlying = TUnderlying_
+      type Type = TWrapper
+    }
+
   /** Combines [[Of]] and [[WithoutValidation]]. */
-  trait WithoutValidationOf[TUnderlying_] extends Newtype.Of[TUnderlying_] with WithoutValidation
+  trait WithoutValidationOf[TUnderlying_]
+      extends Newtype.Of[TUnderlying_]
+      with WithoutValidation
 
   /** Mix-in for newtypes that don't need validation logic.
     *
@@ -133,7 +146,12 @@ object Newtype {
   trait WithoutValidation { self: Newtype =>
     type TError = Nothing
 
-    final override def validatorRules = IArray.empty[ValidatorRule[Any, TError]]
+    /** Allows requiring this companion object in `using` clauses. */
+    transparent inline given instanceForUnvalidated
+        : Newtype.WithUnvalidatedType[TUnderlying, Type] = this
+
+    final override def validator: Validator[TUnderlying, TError] =
+      Validator.noOp
 
     final def apply(input: TUnderlying): Type = make(input) match {
       case Left(_)      => throw new Exception("impossible")

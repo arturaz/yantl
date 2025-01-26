@@ -16,13 +16,22 @@
 
 package yantl
 
-import munit.CatsEffectSuite
+import yantl.util.YantlSuite
 
-class MainSuite extends CatsEffectSuite {
+class MainSuite extends YantlSuite {
 
-  test("Main should exit succesfully") {
-    val main = Main.run.attempt
-    assertIO(main, Right(()))
+  test("validated: success") {
+    assertRight(Age.make(10), Age.makeUnsafe(10))
   }
 
+  test("validated: failure") {
+    assertLeft(
+      Age.make(-1),
+      Vector(ValidatorRule.SmallerThan(minimum = 0, actual = -1))
+    )
+  }
+
+  test("unvalidated: success") {
+    assertEquals(Name("Arturas"), Name.makeUnsafe("Arturas"))
+  }
 }
