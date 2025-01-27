@@ -71,8 +71,8 @@
     <li class="level1 nav-leaf"><a href="001_defining_newtypes.html">Defining Newtypes</a></li>
     <li class="level1 nav-leaf"><a href="002_validator_rules.html">Validator Rules</a></li>
     <li class="level1 active nav-leaf"><a href="#">Providing Typeclasses</a></li>
-    <li class="level1 nav-leaf"><a href="005_making_localized_error_messages.html">Localized Error Messages</a></li>
-    <li class="level1 nav-leaf"><a href="100_final_notes.html">Credits</a></li>
+    <li class="level1 nav-leaf"><a href="004_making_localized_error_messages.html">Localized Error Messages</a></li>
+    <li class="level1 nav-leaf"><a href="100_credits.html">Credits</a></li>
   </ul>
 
 </nav>
@@ -132,14 +132,14 @@
 
 </span><span class="comment">// The instances are automatically provided
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">SerializeToString</span><span>[</span><span class="type-name">Age</span><span>]]
-</span><span class="comment">// res0: SerializeToString[Type] = repl.MdocSession$MdocApp$$Lambda$12783/0x0000000103358840@517effeb
+</span><span class="comment">// res0: SerializeToString[Type] = repl.MdocSession$MdocApp$$Lambda$13708/0x0000000103737040@1e4da5e0
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">DeserializeFromString</span><span>[</span><span class="type-name">Age</span><span>]]
-</span><span class="comment">// res1: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$12785/0x0000000103359840@35518cb6
+</span><span class="comment">// res1: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$13710/0x0000000103738040@2f825473
 </span><span>
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">SerializeToString</span><span>[</span><span class="type-name">Name</span><span>]]
-</span><span class="comment">// res2: SerializeToString[Type] = repl.MdocSession$MdocApp$$Lambda$12783/0x0000000103358840@2dae8af4
+</span><span class="comment">// res2: SerializeToString[Type] = repl.MdocSession$MdocApp$$Lambda$13708/0x0000000103737040@44d6b2a9
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">DeserializeFromString</span><span>[</span><span class="type-name">Name</span><span>]]
-</span><span class="comment">// res3: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$12785/0x0000000103359840@1808936d</span></code></pre>
+</span><span class="comment">// res3: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$13710/0x0000000103738040@54e179fc</span></code></pre>
         <p>You can also provide instances only for unvalidated newtypes:</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">given</span><span> </span><span class="identifier">newTypeDeserializeUnvalidatedFromString</span><span>[</span><span class="type-name">TUnderlying</span><span>, </span><span class="type-name">TWrapper</span><span>](</span><span class="identifier">using</span><span>
   </span><span class="identifier">newType</span><span>: </span><span class="identifier">yantl</span><span>.</span><span class="type-name">Newtype</span><span>.</span><span class="type-name">WithUnvalidatedType</span><span>[</span><span class="type-name">TUnderlying</span><span>, </span><span class="type-name">TWrapper</span><span>],
@@ -149,7 +149,7 @@
 
 </span><span class="comment">// The instance is automatically provided
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">DeserializeFromString</span><span>[</span><span class="type-name">Name</span><span>]]
-</span><span class="comment">// res4: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$12788/0x000000010335ac40@2fbdaf80</span></code></pre>
+</span><span class="comment">// res4: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$13713/0x0000000103739440@69958152</span></code></pre>
 
         
 <hr class="footer-rule"/>
