@@ -10,6 +10,12 @@ trait ValidatorRule[-Input, +Error] {
   def mapInput[NewInput](f: NewInput => Input): ValidatorRule[NewInput, Error] =
     input => validate(f(input))
 
+  def emapInput[NewInput, NewError >: Error](f: NewInput => Either[NewError, Input]): ValidatorRule[NewInput, NewError] =
+    input => f(input) match {
+      case Left(error) => Some(error)
+      case Right(input) => validate(input)
+    }
+
   def mapBoth[NewInput, NewError](
       inputMapper: NewInput => Input,
       errorMapper: Error => NewError

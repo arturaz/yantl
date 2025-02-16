@@ -16,53 +16,18 @@ trait Newtype { self =>
 
   def validator: Validator[TUnderlying, TError] = Validator.noOp
 
-  /** Validates the input using [[validators]]. */
-  def validate(input: TUnderlying): Vector[TError] = validator.validate(input)
+  object make extends Make[TUnderlying, TError, Type] {
+    override def apply(input: TUnderlying): Either[Vector[TError], Type] = {
+      val errors = validator.validate(input)
 
-  /** Variant of [[validate]] that returns errors as a [[Vector]] of strings. */
-  def validateAsStrings(input: TUnderlying): Vector[String] =
-    validator.validateAsStrings(input)
-
-  /** Variant of [[validate]] that returns errors as a single English string. */
-  def validateAsString(input: TUnderlying): Option[String] =
-    validator.validateAsString(input)
-
-  /** Creates a new instance of the wrapped type, validating it first.
-    *
-    * @return
-    *   [[Left]] if there were errors, [[Right]] otherwise
-    */
-  def make(input: TUnderlying): Either[Vector[TError], Type] = {
-    val errors = validate(input)
-
-    if (errors.isEmpty) Right(input) else Left(errors)
-  }
-
-  /** Variant of [[make]] that returns errors as a [[Vector]] of strings. */
-  def makeAsStrings(input: TUnderlying): Either[Vector[String], Type] =
-    make(input).left.map(_.map(_.toString))
-
-  /** Variant of [[make]] that returns errors as a single English string. */
-  def makeAsString(input: TUnderlying): Either[String, Type] =
-    make(input).left.map(Validator.errorsToString)
-
-  /** Creates a new instance of the wrapped type, validating it first.
-    *
-    * Should be used only in cases where the input is guaranteed to be valid,
-    * like in statically known values.
-    *
-    * @throws IllegalArgumentException
-    *   if there were errors
-    */
-  def makeOrThrow(input: TUnderlying): Type =
-    makeAsString(input) match {
-      case Left(value)  => throw new IllegalArgumentException(value)
-      case Right(value) => value
+      if (errors.isEmpty) Right(input) else Left(errors)
     }
 
-  /** Creates a new instance of the wrapped type without validating it. */
-  def makeUnsafe(input: TUnderlying): Type =
-    input
+    /** Creates a new instance of the wrapped type without validating it. */
+    override def unsafe(input: TUnderlying): Type =
+      input
+  }
+  given Make[TUnderlying, TError, Type] = make
 
   extension (v: Type) {
 
@@ -127,6 +92,13 @@ object Newtype {
     type Type = TWrapper
   }
 
+  /** As [[WithType]] but with error type. */
+  type WithTypeAndError[TUnderlying_, TWrapper, TError_] = Newtype {
+    type TUnderlying = TUnderlying_
+    type TError = TError_
+    type Type = TWrapper
+  }
+
   /** As [[WithType]] but for unvalidated newtypes. */
   type WithUnvalidatedType[TUnderlying_, TWrapper] = Newtype &
     WithoutValidation {
@@ -153,7 +125,7 @@ object Newtype {
     final override def validator: Validator[TUnderlying, TError] =
       Validator.noOp
 
-    final def apply(input: TUnderlying): Type = make(input) match {
+    final def apply(input: TUnderlying): Type = make.apply(input) match {
       case Left(_)      => throw new Exception("impossible")
       case Right(value) => value
     }

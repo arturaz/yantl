@@ -27,20 +27,24 @@ Creating validated instances:
 Age.make(25)
 Age.make(-5)
 
+// With errors as strings.
+// You need to define how to convert the error messages to strings first.
+given [A]: AsString[A] = AsString.fromToString
+
 // Creation with multiple string error messages
-Age.makeAsStrings(-5)
+Age.make.asStrings(-5)
 
 // Creation with a single string error message
-Age.makeAsString(-5)
+Age.make.asString(-5)
 
 // Performs no checking, allowing invalid values to be created
-Age.makeUnsafe(-5)
+Age.make.unsafe(-5)
 ```
 
 For statically known values, you can use `makeOrThrow` to throw an exception if the value is invalid:
 
 ```scala mdoc:crash
-Age.makeOrThrow(-5)
+Age.make.orThrow(-5)
 ```
 
 ## Without Validation

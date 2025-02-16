@@ -1,5 +1,5 @@
 // https://typelevel.org/sbt-typelevel/faq.html#what-is-a-base-version-anyway
-ThisBuild / tlBaseVersion := "0.1" // your current series x.y
+ThisBuild / tlBaseVersion := "0.2" // your current series x.y
 
 ThisBuild / organization := "io.github.arturaz"
 ThisBuild / organizationName := "arturaz"
@@ -10,8 +10,8 @@ ThisBuild / developers := List(
   tlGitHubDev("arturaz", "Artūras Šlajus")
 )
 
-// publish to s01.oss.sonatype.org (set to true to publish to oss.sonatype.org instead)
-ThisBuild / tlSonatypeUseLegacyHost := false
+// publish to s01.oss.sonatype.org (set to sonatypeLegacy to publish to oss.sonatype.org instead)
+ThisBuild / sonatypeCredentialHost := xerial.sbt.Sonatype.sonatype01
 
 // publish website from this branch
 ThisBuild / tlSitePublishBranch := Some("main")

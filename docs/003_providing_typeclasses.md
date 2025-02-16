@@ -39,11 +39,15 @@ given newTypeSerializeToString[TUnderlying, TWrapper](using
 ): SerializeToString[TWrapper] =
   t => serializer.serialize(t.unwrap)
 
-given newTypeDeserializeFromString[TUnderlying, TWrapper](using
-  newType: yantl.Newtype.WithType[TUnderlying, TWrapper],
+given newTypeDeserializeFromString[TUnderlying, TWrapper, TError](using
+  newType: yantl.Newtype.WithTypeAndError[TUnderlying, TWrapper, TError],
+  asString: yantl.AsString[TError],
   deserializer: DeserializeFromString[TUnderlying],
 ): DeserializeFromString[TWrapper] =
-  str => deserializer.deserialize(str).flatMap(newType.makeAsString)
+  str => deserializer.deserialize(str).flatMap(newType.make.asString)
+
+// You need to define how to convert the error messages to strings first.
+given [A]: AsString[A] = AsString.fromToString
 
 // The instances are automatically provided
 summon[SerializeToString[Age]]

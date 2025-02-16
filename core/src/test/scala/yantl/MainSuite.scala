@@ -21,7 +21,7 @@ import yantl.util.YantlSuite
 class MainSuite extends YantlSuite {
 
   test("validated: success") {
-    assertRight(Age.make(10), Age.makeUnsafe(10))
+    assertRight(Age.make(10), Age.make.unsafe(10))
   }
 
   test("validated: failure") {
@@ -32,6 +32,6 @@ class MainSuite extends YantlSuite {
   }
 
   test("unvalidated: success") {
-    assertEquals(Name("Arturas"), Name.makeUnsafe("Arturas"))
+    assertEquals(Name("Arturas"), Name.make.unsafe("Arturas"))
   }
 }
