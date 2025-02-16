@@ -72,6 +72,7 @@
     <li class="level1 nav-leaf"><a href="002_validator_rules.html">Validator Rules</a></li>
     <li class="level1 nav-leaf"><a href="003_providing_typeclasses.html">Providing Typeclasses</a></li>
     <li class="level1 nav-leaf"><a href="004_making_localized_error_messages.html">Localized Error Messages</a></li>
+    <li class="level1 nav-leaf"><a href="090_changelog.html">Changelog</a></li>
     <li class="level1 nav-leaf"><a href="100_credits.html">Credits</a></li>
   </ul>
 
@@ -121,28 +122,32 @@
 //   value = Vector(SmallerThan(minimum = 0L, actual = -5L))
 // )
 </span><span>
+</span><span class="comment">// With errors as strings.
+// You need to define how to convert the error messages to strings first.
+</span><span class="keyword">given</span><span> [</span><span class="type-name">A</span><span>]: </span><span class="type-name">AsString</span><span>[</span><span class="type-name">A</span><span>] = </span><span class="type-name">AsString</span><span>.</span><span class="identifier">fromToString</span><span>
+
 </span><span class="comment">// Creation with multiple string error messages
-</span><span class="type-name">Age</span><span>.</span><span class="identifier">makeAsStrings</span><span>(-</span><span class="number-literal">5</span><span>)
+</span><span class="type-name">Age</span><span>.</span><span class="identifier">make</span><span>.</span><span class="identifier">asStrings</span><span>(-</span><span class="number-literal">5</span><span>)
 </span><span class="comment">// res2: Either[Vector[String], Type] = Left(
 //   value = Vector(&quot;Cannot be smaller than 0, was -5.&quot;)
 // )
 </span><span>
 </span><span class="comment">// Creation with a single string error message
-</span><span class="type-name">Age</span><span>.</span><span class="identifier">makeAsString</span><span>(-</span><span class="number-literal">5</span><span>)
+</span><span class="type-name">Age</span><span>.</span><span class="identifier">make</span><span>.</span><span class="identifier">asString</span><span>(-</span><span class="number-literal">5</span><span>)
 </span><span class="comment">// res3: Either[String, Type] = Left(
 //   value = &quot;Cannot be smaller than 0, was -5.&quot;
 // )
 </span><span>
 </span><span class="comment">// Performs no checking, allowing invalid values to be created
-</span><span class="type-name">Age</span><span>.</span><span class="identifier">makeUnsafe</span><span>(-</span><span class="number-literal">5</span><span>)
+</span><span class="type-name">Age</span><span>.</span><span class="identifier">make</span><span>.</span><span class="identifier">unsafe</span><span>(-</span><span class="number-literal">5</span><span>)
 </span><span class="comment">// res4: Type = -5L</span></code></pre>
         <p>For statically known values, you can use <code>makeOrThrow</code> to throw an exception if the value is invalid:</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="type-name">Age</span><span>.</span><span class="identifier">makeOrThrow</span><span>(-</span><span class="number-literal">5</span><span>)
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="type-name">Age</span><span>.</span><span class="identifier">make</span><span>.</span><span class="identifier">orThrow</span><span>(-</span><span class="number-literal">5</span><span>)
 </span><span class="comment">// java.lang.IllegalArgumentException: Cannot be smaller than 0, was -5.
-// 	at yantl.Newtype.makeOrThrow(Newtype.scala:59)
-// 	at yantl.Newtype.makeOrThrow$(Newtype.scala:3)
-// 	at repl.MdocSession$MdocApp$Age$.makeOrThrow(001_defining_newtypes.md:10)
-// 	at repl.MdocSession$MdocApp.$init$$$anonfun$1(001_defining_newtypes.md:46)</span></code></pre>
+// 	at yantl.Make.orThrow(Make.scala:47)
+// 	at yantl.Make.orThrow$(Make.scala:15)
+// 	at yantl.Newtype$make$.orThrow(Newtype.scala:19)
+// 	at repl.MdocSession$MdocApp.$init$$$anonfun$1(001_defining_newtypes.md:49)</span></code></pre>
         
         <h2 id="without-validation" class="section"><a class="anchor-link left" href="#without-validation"><i class="icofont-laika link">&#xef71;</i></a>Without Validation</h2>
         <p>When you just need type safety without validation rules:</p>

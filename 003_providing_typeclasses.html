@@ -72,6 +72,7 @@
     <li class="level1 nav-leaf"><a href="002_validator_rules.html">Validator Rules</a></li>
     <li class="level1 active nav-leaf"><a href="#">Providing Typeclasses</a></li>
     <li class="level1 nav-leaf"><a href="004_making_localized_error_messages.html">Localized Error Messages</a></li>
+    <li class="level1 nav-leaf"><a href="090_changelog.html">Changelog</a></li>
     <li class="level1 nav-leaf"><a href="100_credits.html">Credits</a></li>
   </ul>
 
@@ -124,22 +125,26 @@
 ): </span><span class="type-name">SerializeToString</span><span>[</span><span class="type-name">TWrapper</span><span>] =
   </span><span class="identifier">t</span><span> =&gt; </span><span class="identifier">serializer</span><span>.</span><span class="identifier">serialize</span><span>(</span><span class="identifier">t</span><span>.</span><span class="identifier">unwrap</span><span>)
 
-</span><span class="keyword">given</span><span> </span><span class="identifier">newTypeDeserializeFromString</span><span>[</span><span class="type-name">TUnderlying</span><span>, </span><span class="type-name">TWrapper</span><span>](</span><span class="identifier">using</span><span>
-  </span><span class="identifier">newType</span><span>: </span><span class="identifier">yantl</span><span>.</span><span class="type-name">Newtype</span><span>.</span><span class="type-name">WithType</span><span>[</span><span class="type-name">TUnderlying</span><span>, </span><span class="type-name">TWrapper</span><span>],
+</span><span class="keyword">given</span><span> </span><span class="identifier">newTypeDeserializeFromString</span><span>[</span><span class="type-name">TUnderlying</span><span>, </span><span class="type-name">TWrapper</span><span>, </span><span class="type-name">TError</span><span>](</span><span class="identifier">using</span><span>
+  </span><span class="identifier">newType</span><span>: </span><span class="identifier">yantl</span><span>.</span><span class="type-name">Newtype</span><span>.</span><span class="type-name">WithTypeAndError</span><span>[</span><span class="type-name">TUnderlying</span><span>, </span><span class="type-name">TWrapper</span><span>, </span><span class="type-name">TError</span><span>],
+  </span><span class="identifier">asString</span><span>: </span><span class="identifier">yantl</span><span>.</span><span class="type-name">AsString</span><span>[</span><span class="type-name">TError</span><span>],
   </span><span class="identifier">deserializer</span><span>: </span><span class="type-name">DeserializeFromString</span><span>[</span><span class="type-name">TUnderlying</span><span>],
 ): </span><span class="type-name">DeserializeFromString</span><span>[</span><span class="type-name">TWrapper</span><span>] =
-  </span><span class="identifier">str</span><span> =&gt; </span><span class="identifier">deserializer</span><span>.</span><span class="identifier">deserialize</span><span>(</span><span class="identifier">str</span><span>).</span><span class="identifier">flatMap</span><span>(</span><span class="identifier">newType</span><span>.</span><span class="identifier">makeAsString</span><span>)
+  </span><span class="identifier">str</span><span> =&gt; </span><span class="identifier">deserializer</span><span>.</span><span class="identifier">deserialize</span><span>(</span><span class="identifier">str</span><span>).</span><span class="identifier">flatMap</span><span>(</span><span class="identifier">newType</span><span>.</span><span class="identifier">make</span><span>.</span><span class="identifier">asString</span><span>)
+
+</span><span class="comment">// You need to define how to convert the error messages to strings first.
+</span><span class="keyword">given</span><span> [</span><span class="type-name">A</span><span>]: </span><span class="type-name">AsString</span><span>[</span><span class="type-name">A</span><span>] = </span><span class="type-name">AsString</span><span>.</span><span class="identifier">fromToString</span><span>
 
 </span><span class="comment">// The instances are automatically provided
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">SerializeToString</span><span>[</span><span class="type-name">Age</span><span>]]
-</span><span class="comment">// res0: SerializeToString[Type] = repl.MdocSession$MdocApp$$Lambda$13708/0x0000000103737040@1e4da5e0
+</span><span class="comment">// res0: SerializeToString[Type] = repl.MdocSession$MdocApp$$Lambda$12859/0x0000000101799c40@7a9e58c0
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">DeserializeFromString</span><span>[</span><span class="type-name">Age</span><span>]]
-</span><span class="comment">// res1: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$13710/0x0000000103738040@2f825473
+</span><span class="comment">// res1: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$12861/0x0000000101795440@cefdbf2
 </span><span>
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">SerializeToString</span><span>[</span><span class="type-name">Name</span><span>]]
-</span><span class="comment">// res2: SerializeToString[Type] = repl.MdocSession$MdocApp$$Lambda$13708/0x0000000103737040@44d6b2a9
+</span><span class="comment">// res2: SerializeToString[Type] = repl.MdocSession$MdocApp$$Lambda$12859/0x0000000101799c40@3abc86b2
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">DeserializeFromString</span><span>[</span><span class="type-name">Name</span><span>]]
-</span><span class="comment">// res3: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$13710/0x0000000103738040@54e179fc</span></code></pre>
+</span><span class="comment">// res3: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$12861/0x0000000101795440@7ab97b08</span></code></pre>
         <p>You can also provide instances only for unvalidated newtypes:</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">given</span><span> </span><span class="identifier">newTypeDeserializeUnvalidatedFromString</span><span>[</span><span class="type-name">TUnderlying</span><span>, </span><span class="type-name">TWrapper</span><span>](</span><span class="identifier">using</span><span>
   </span><span class="identifier">newType</span><span>: </span><span class="identifier">yantl</span><span>.</span><span class="type-name">Newtype</span><span>.</span><span class="type-name">WithUnvalidatedType</span><span>[</span><span class="type-name">TUnderlying</span><span>, </span><span class="type-name">TWrapper</span><span>],
@@ -149,7 +154,7 @@
 
 </span><span class="comment">// The instance is automatically provided
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">DeserializeFromString</span><span>[</span><span class="type-name">Name</span><span>]]
-</span><span class="comment">// res4: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$13713/0x0000000103739440@69958152</span></code></pre>
+</span><span class="comment">// res4: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$12864/0x000000010178f440@6455f8da</span></code></pre>
 
         
 <hr class="footer-rule"/>

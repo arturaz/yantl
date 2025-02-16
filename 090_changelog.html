@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="Typelevel Laika + Helium Theme" />
-  <title>Installation</title>
+  <title>Changelog</title>
   
   <meta name="author" content="Artūras Šlajus"/>
   
@@ -67,12 +67,12 @@
   </div>
 
   <ul class="nav-list">
-    <li class="level1 active nav-leaf"><a href="#">Installation</a></li>
+    <li class="level1 nav-leaf"><a href="000_installation.html">Installation</a></li>
     <li class="level1 nav-leaf"><a href="001_defining_newtypes.html">Defining Newtypes</a></li>
     <li class="level1 nav-leaf"><a href="002_validator_rules.html">Validator Rules</a></li>
     <li class="level1 nav-leaf"><a href="003_providing_typeclasses.html">Providing Typeclasses</a></li>
     <li class="level1 nav-leaf"><a href="004_making_localized_error_messages.html">Localized Error Messages</a></li>
-    <li class="level1 nav-leaf"><a href="090_changelog.html">Changelog</a></li>
+    <li class="level1 active nav-leaf"><a href="#">Changelog</a></li>
     <li class="level1 nav-leaf"><a href="100_credits.html">Credits</a></li>
   </ul>
 
@@ -82,9 +82,11 @@
 
       
 <nav id="page-nav">
-  <p class="header"><a href="#">Installation</a></p>
+  <p class="header"><a href="#">Changelog</a></p>
 
   <ul class="nav-list">
+    <li class="level1 nav-leaf"><a href="#v0-2-0">v0.2.0</a></li>
+    <li class="level1 nav-leaf"><a href="#v0-1-0">v0.1.0</a></li>
   </ul>
 
   <p class="footer"></p>
@@ -93,32 +95,33 @@
 
       <main class="content">
 
-        <h1 id="installation" class="title">Installation</h1>
-        <p>Add the following to your <code>build.sbt</code>:</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">libraryDependencies</span><span> += </span><span class="string-literal">&quot;io.github.arturaz&quot;</span><span> %% </span><span class="string-literal">&quot;yantl&quot;</span><span> % </span><span class="string-literal">&quot;0.2.0&quot;</span></code></pre>
-        <p>Or <code>build.sc</code> if you are using <a href="https://mill-build.com">mill</a>:</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">override</span><span> </span><span class="keyword">def</span><span> </span><span class="declaration-name">ivyDeps</span><span> = </span><span class="type-name">Agg</span><span>(
-  </span><span class="string-literal">ivy&quot;io.github.arturaz::yantl:0.2.0&quot;</span><span>
-)</span></code></pre>
-        <p>The code from <code>main</code> branch can be obtained with:</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">resolvers</span><span> ++= </span><span class="type-name">Resolver</span><span>.</span><span class="identifier">sonatypeOssRepos</span><span>(</span><span class="string-literal">&quot;snapshots&quot;</span><span>)
-</span><span class="identifier">libraryDependencies</span><span> += </span><span class="string-literal">&quot;io.github.arturaz&quot;</span><span> %% </span><span class="string-literal">&quot;yantl&quot;</span><span> % </span><span class="string-literal">&quot;0.2-0710d9b-SNAPSHOT&quot;</span></code></pre>
-        <p>For <a href="https://mill-build.com">mill</a>:</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span>  </span><span class="keyword">override</span><span> </span><span class="keyword">def</span><span> </span><span class="declaration-name">repositoriesTask</span><span> = </span><span class="type-name">T</span><span>.</span><span class="identifier">task</span><span> {
-    </span><span class="keyword">super</span><span>.</span><span class="identifier">repositoriesTask</span><span>() ++ </span><span class="type-name">Seq</span><span>(
-      </span><span class="identifier">coursier</span><span>.</span><span class="type-name">Repositories</span><span>.</span><span class="identifier">sonatype</span><span>(</span><span class="string-literal">&quot;snapshots&quot;</span><span>)
-    )
-  }
-
-</span><span class="keyword">override</span><span> </span><span class="keyword">def</span><span> </span><span class="declaration-name">ivyDeps</span><span> = </span><span class="type-name">Agg</span><span>(
-  </span><span class="string-literal">ivy&quot;io.github.arturaz::yantl:0.2-0710d9b-SNAPSHOT&quot;</span><span>
-)</span></code></pre>
-        <p><strong>The library is only published for Scala 3</strong> due to the use of 
-        <a href="https://docs.scala-lang.org/scala3/book/types-union.html">Scala 3 union types</a>.</p>
-        <p>You can see all the published artifacts on 
-        <a href="https://mvnrepository.com/artifact/io.github.arturaz/yantl_3">MVN Repository</a>, 
-        <a href="https://search.maven.org/artifact/io.github.arturaz/yantl_3">Maven Central</a>,
-        <a href="https://repo1.maven.org/maven2/io/github/arturaz/yantl_3/">raw Maven repository</a>.</p>
+        <h1 id="changelog" class="title">Changelog</h1>
+        
+        <h2 id="v0-2-0" class="section"><a class="anchor-link left" href="#v0-2-0"><i class="icofont-laika link">&#xef71;</i></a>v0.2.0</h2>
+        <p><strong>2025-02-16</strong></p>
+        <ul>
+          <li>Added <code>Validate[-TInput, +TError]</code> and <code>Make[-TInput, +TError, +TOutput]</code> traits.</li>
+          <li>
+            <code>Newtype</code> now contains <code>object make extends Make[...]</code>.
+            <ul>
+              <li>Source compatibility for <code>MyNewType.make(10)</code> did not change, but it&#39;s not binary compatible with previous version.</li>
+              <li><code>MyNewType.makeUnsafe</code> -&gt; <code>MyNewType.make.unsafe</code></li>
+              <li><code>MyNewType.makeAsString</code> -&gt; <code>MyNewType.make.asString</code></li>
+              <li><code>MyNewType.makeAsStrings</code> -&gt; <code>MyNewType.make.asStrings</code></li>
+              <li><code>MyNewType.makeOrThrow</code> -&gt; <code>MyNewType.make.orThrow</code></li>
+            </ul>
+          </li>
+          <li>
+            All of the <code>Make</code> functions that return errors as strings now require <code>AsString[TError]</code> instance.
+            <ul>
+              <li>You can use the default <code>.toString()</code> based implementation with <code>AsString.fromToString</code>. </li>
+            </ul>
+          </li>
+        </ul>
+        
+        <h2 id="v0-1-0" class="section"><a class="anchor-link left" href="#v0-1-0"><i class="icofont-laika link">&#xef71;</i></a>v0.1.0</h2>
+        <p><strong>2025-01-26</strong></p>
+        <p>Initial release.</p>
 
         
 <hr class="footer-rule"/>
