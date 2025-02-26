@@ -125,7 +125,8 @@ object Newtype {
     final override def validator: Validator[TUnderlying, TError] =
       Validator.noOp
 
-    final def apply(input: TUnderlying): Type = make.apply(input) match {
+    // Not final as the extending type can add extra logic to making these types.
+    def apply(input: TUnderlying): Type = make.apply(input) match {
       case Left(_)      => throw new Exception("impossible")
       case Right(value) => value
     }
