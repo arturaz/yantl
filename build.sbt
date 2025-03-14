@@ -37,6 +37,10 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     name := "yantl",
     libraryDependencies ++= Seq(
       "org.scalameta" %%% "munit" % "1.1.0" % Test
+    ),
+    addCommandAlias(
+      "prepareCi",
+      "scalafmtAll;scalafmtSbt;scalafixAll;test;docs/tlSite;mimaReportBinaryIssues"
     )
   )
 
