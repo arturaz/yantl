@@ -80,3 +80,10 @@ trait Validate[-TInput, +TError] { self =>
   ): Validate[OtherInput, TError | OtherError] =
     input => self.validate(input) ++ that.validate(input)
 }
+object Validate {
+
+  /** Creates an instance from a function. */
+  def of[TInput, TError](
+      f: TInput => Vector[TError]
+  ): Validate[TInput, TError] = (input: TInput) => f(input)
+}
