@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.2.4
+
+**2025-04-07**
+
+- Added `StdLibGivens` trait.
+
+## v0.2.3
+
+**2025-03-17**
+
+- Added `Validate.of`.
+
+## v0.2.2
+
+**2025-03-14**
+
+- Make `Newtype.Withoutvalidation.apply` not final.
+
+## v0.2.1
+
+**2025-02-26**
+
+Broken release.
+
 ## v0.2.0
 
 **2025-02-16**
