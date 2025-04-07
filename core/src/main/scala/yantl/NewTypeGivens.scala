@@ -7,11 +7,6 @@ trait NewTypeGivens
     extends scala.math.Integral.ExtraImplicits
     with scala.math.Fractional.ExtraImplicits
 object NewTypeGivens {
-  given newTypeOrdering[TUnderlying, TWrapper](using
-      yantl.Newtype.WithType[TUnderlying, TWrapper],
-      Ordering[TUnderlying]
-  ): Ordering[TWrapper] = Ordering.by(_.unwrap)
-
   given newTypeNumeric[TUnderlying, TWrapper](using
       newType: yantl.Newtype.WithUnvalidatedType[TUnderlying, TWrapper],
       numeric: Numeric[TUnderlying]
