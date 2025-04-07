@@ -1,6 +1,6 @@
-# New Type Givens
+# Standard Given Instances
 
-The `NewTypeGivens` trait provides standard Scala type class instances `Numeric`, `Integral`, `Fractional`
+The `StandardGivenInstances` trait provides standard Scala type class instances `Numeric`, `Integral`, `Fractional`
 for newtype wrappers (only works for newtypes which do not have validation).
 
 ## Examples
@@ -9,10 +9,10 @@ For the upcoming examples let's define some newtypes and values:
 ```scala mdoc
 import yantl.*
 
-object Score extends Newtype.WithoutValidationOf[Long] with NewTypeGivens
+object Score extends Newtype.WithoutValidationOf[Long] with StandardGivenInstances
 type Score = Score.Type
 
-object ScoreFloat extends Newtype.WithoutValidationOf[Float] with NewTypeGivens
+object ScoreFloat extends Newtype.WithoutValidationOf[Float] with StandardGivenInstances
 type ScoreFloat = ScoreFloat.Type
 
 val score1 = Score(50)

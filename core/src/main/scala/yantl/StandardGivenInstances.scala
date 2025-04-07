@@ -3,10 +3,10 @@ package yantl
 /** Provides standard Scala type class instances (`Numeric`, `Ordering`, etc.)
   * for `NewType` wrappers.
   */
-trait NewTypeGivens
+trait StandardGivenInstances
     extends scala.math.Integral.ExtraImplicits
     with scala.math.Fractional.ExtraImplicits
-object NewTypeGivens {
+object StandardGivenInstances {
   given newTypeNumeric[TUnderlying, TWrapper](using
       newType: yantl.Newtype.WithUnvalidatedType[TUnderlying, TWrapper],
       numeric: Numeric[TUnderlying]
