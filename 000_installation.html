@@ -72,6 +72,7 @@
     <li class="level1 nav-leaf"><a href="002_validator_rules.html">Validator Rules</a></li>
     <li class="level1 nav-leaf"><a href="003_providing_typeclasses.html">Providing Typeclasses</a></li>
     <li class="level1 nav-leaf"><a href="004_making_localized_error_messages.html">Localized Error Messages</a></li>
+    <li class="level1 nav-leaf"><a href="005_standard_given_instances.html">Standard Given Instances</a></li>
     <li class="level1 nav-leaf"><a href="090_changelog.html">Changelog</a></li>
     <li class="level1 nav-leaf"><a href="100_credits.html">Credits</a></li>
   </ul>
@@ -95,14 +96,14 @@
 
         <h1 id="installation" class="title">Installation</h1>
         <p>Add the following to your <code>build.sbt</code>:</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">libraryDependencies</span><span> += </span><span class="string-literal">&quot;io.github.arturaz&quot;</span><span> %% </span><span class="string-literal">&quot;yantl&quot;</span><span> % </span><span class="string-literal">&quot;0.2.2&quot;</span></code></pre>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">libraryDependencies</span><span> += </span><span class="string-literal">&quot;io.github.arturaz&quot;</span><span> %% </span><span class="string-literal">&quot;yantl&quot;</span><span> % </span><span class="string-literal">&quot;0.2.3&quot;</span></code></pre>
         <p>Or <code>build.sc</code> if you are using <a href="https://mill-build.com">mill</a>:</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">override</span><span> </span><span class="keyword">def</span><span> </span><span class="declaration-name">ivyDeps</span><span> = </span><span class="type-name">Agg</span><span>(
-  </span><span class="string-literal">ivy&quot;io.github.arturaz::yantl:0.2.2&quot;</span><span>
+  </span><span class="string-literal">ivy&quot;io.github.arturaz::yantl:0.2.3&quot;</span><span>
 )</span></code></pre>
         <p>The code from <code>main</code> branch can be obtained with:</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">resolvers</span><span> ++= </span><span class="type-name">Resolver</span><span>.</span><span class="identifier">sonatypeOssRepos</span><span>(</span><span class="string-literal">&quot;snapshots&quot;</span><span>)
-</span><span class="identifier">libraryDependencies</span><span> += </span><span class="string-literal">&quot;io.github.arturaz&quot;</span><span> %% </span><span class="string-literal">&quot;yantl&quot;</span><span> % </span><span class="string-literal">&quot;0.2.2-4-cc642fe-SNAPSHOT&quot;</span></code></pre>
+</span><span class="identifier">libraryDependencies</span><span> += </span><span class="string-literal">&quot;io.github.arturaz&quot;</span><span> %% </span><span class="string-literal">&quot;yantl&quot;</span><span> % </span><span class="string-literal">&quot;0.2.3-1-6b1ddd9-SNAPSHOT&quot;</span></code></pre>
         <p>For <a href="https://mill-build.com">mill</a>:</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span>  </span><span class="keyword">override</span><span> </span><span class="keyword">def</span><span> </span><span class="declaration-name">repositoriesTask</span><span> = </span><span class="type-name">T</span><span>.</span><span class="identifier">task</span><span> {
     </span><span class="keyword">super</span><span>.</span><span class="identifier">repositoriesTask</span><span>() ++ </span><span class="type-name">Seq</span><span>(
@@ -111,7 +112,7 @@
   }
 
 </span><span class="keyword">override</span><span> </span><span class="keyword">def</span><span> </span><span class="declaration-name">ivyDeps</span><span> = </span><span class="type-name">Agg</span><span>(
-  </span><span class="string-literal">ivy&quot;io.github.arturaz::yantl:0.2.2-4-cc642fe-SNAPSHOT&quot;</span><span>
+  </span><span class="string-literal">ivy&quot;io.github.arturaz::yantl:0.2.3-1-6b1ddd9-SNAPSHOT&quot;</span><span>
 )</span></code></pre>
         <p><strong>The library is only published for Scala 3</strong> due to the use of 
         <a href="https://docs.scala-lang.org/scala3/book/types-union.html">Scala 3 union types</a>.</p>
