@@ -1,8 +1,7 @@
 package yantl
 
 /** Provides standard Scala type class instances (`Numeric`, `Ordering`, etc.) for `NewType` wrappers. */
-trait NewTypeGivens extends scala.math.Numeric.ExtraImplicits
-  with scala.math.Integral.ExtraImplicits
+trait NewTypeGivens extends scala.math.Integral.ExtraImplicits
   with scala.math.Fractional.ExtraImplicits
 object NewTypeGivens {
   given newTypeOrdering[TUnderlying, TWrapper](using
