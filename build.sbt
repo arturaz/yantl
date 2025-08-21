@@ -10,9 +10,6 @@ ThisBuild / developers := List(
   tlGitHubDev("arturaz", "Artūras Šlajus")
 )
 
-// publish to s01.oss.sonatype.org (set to sonatypeLegacy to publish to oss.sonatype.org instead)
-ThisBuild / sonatypeCredentialHost := xerial.sbt.Sonatype.sonatype01
-
 // publish website from this branch
 ThisBuild / tlSitePublishBranch := Some("main")
 
@@ -21,7 +18,7 @@ ThisBuild / scalacOptions ++= Seq(
   "-language:implicitConversions"
 )
 
-ThisBuild / scalaVersion := "3.3.4" // the default Scala
+ThisBuild / scalaVersion := "3.3.6" // the default Scala
 
 // Disable the checks, I don't want to deal with them right now.
 ThisBuild / tlCiHeaderCheck := false
