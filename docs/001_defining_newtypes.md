@@ -10,7 +10,7 @@ inferred from the validator rules:
 ```scala mdoc
 import yantl.*
 
-object Age extends Newtype.ValidatedOf(Validator.of(ValidatorRule.minValue(0L)))
+case object Age extends Newtype.ValidatedOf(Validator.of(ValidatorRule.minValue(0L)))
 type Age = Age.Type
 ```
 
@@ -86,7 +86,7 @@ trait NewtypeNonEmptyString extends NewtypeString {
   // Unfortunately you have to repeat the type here
   type TError = ValidatorRule.HadSurroundingWhitespace | ValidatorRule.WasBlank
 
-  override val validator = NewtypeNonEmptyString.validator
+  override val validate = NewtypeNonEmptyString.validator
 }
 object NewtypeNonEmptyString {
   val validator = Validator.of(
@@ -99,7 +99,7 @@ object NewtypeNonEmptyString {
 Then, end-user code can use `NewtypeNonEmptyString` to get the `Ordering` instance for free:
 
 ```scala mdoc
-object ForumTopic extends NewtypeNonEmptyString
+case object ForumTopic extends NewtypeNonEmptyString
 type ForumTopic = ForumTopic.Type
 
 ForumTopic.make("What are newtypes?")
@@ -110,13 +110,13 @@ ForumTopic.make("")
 Or they can refine the type even further:
 
 ```scala mdoc
-object ForumTopicStrict extends NewtypeString {
+case object ForumTopicStrict extends NewtypeString {
   type TError =
     ValidatorRule.HadSurroundingWhitespace | 
       ValidatorRule.WasBlank | 
       ValidatorRule.UnderMinLength[String]
 
-  override val validator = 
+  override val validate = 
     NewtypeNonEmptyString.validator and Validator.of(ValidatorRule.minLength(10))
 }
 type ForumTopicStrict = ForumTopicStrict.Type
@@ -124,6 +124,37 @@ type ForumTopicStrict = ForumTopicStrict.Type
 ForumTopicStrict.make("What are newtypes?")
 
 ForumTopicStrict.make("newtypes?")
+```
+
+## Chained Newtypes
+
+You can have newtypes that are based off other newtypes. For example, you can define an `Email` newtype and then more 
+specific `GoogleMailEmail` newtype that refines `Email` even more.
+
+```scala mdoc
+case class NotAnEmail(email: String)
+case object Email extends Newtype.ValidatedOf(Validator.of(
+  ValidatorRule.of { (email: String) =>
+    if (email.contains("@")) None else Some(NotAnEmail(email))
+  }
+))
+type Email = Email.Type
+
+case class NotAGoogleMail(email: Email)
+case object GoogleMailEmail extends Newtype.ValidatedOf(Validator.of(
+  ValidatorRule.of { (email: Email) =>
+    if (Email.unwrap(email).endsWith("@gmail.com")) None else Some(NotAGoogleMail(email))
+  }
+))
+
+val ChainedGoogleMailEmail = Email.compose(GoogleMailEmail)
+type ChainedGoogleMailEmail = ChainedGoogleMailEmail.Type
+
+ChainedGoogleMailEmail.make("foo")
+
+ChainedGoogleMailEmail.make("foo@outlook.com")
+
+ChainedGoogleMailEmail.make("foo@gmail.com")
 ```
 
 ## Best Practices

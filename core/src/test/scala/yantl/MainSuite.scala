@@ -19,6 +19,7 @@ package yantl
 import yantl.util.YantlSuite
 
 class MainSuite extends YantlSuite {
+  given [A]: AsString[A] = AsString.fromToString
 
   test("validated: success") {
     assertRight(Age.make(10), Age.make.unsafe(10))
@@ -33,5 +34,26 @@ class MainSuite extends YantlSuite {
 
   test("unvalidated: success") {
     assertEquals(Name("Arturas"), Name.make.unsafe("Arturas"))
+  }
+
+  test("chained: success") {
+    assertRight(
+      ChainedGoogleMailEmail.make("foo@gmail.com"),
+      ChainedGoogleMailEmail.make.unsafe("foo@gmail.com")
+    )
+  }
+
+  test("chained: failure step 1") {
+    assertLeft(
+      ChainedGoogleMailEmail.make("foo"),
+      Vector(NotAnEmail("foo"))
+    )
+  }
+
+  test("chained: failure step 2") {
+    assertLeft(
+      ChainedGoogleMailEmail.make("foo@outlook.com"),
+      Vector(NotAGoogleMail(Email.make.orThrow("foo@outlook.com")))
+    )
   }
 }

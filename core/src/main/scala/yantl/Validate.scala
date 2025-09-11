@@ -86,4 +86,7 @@ object Validate {
   def of[TInput, TError](
       f: TInput => Vector[TError]
   ): Validate[TInput, TError] = (input: TInput) => f(input)
+
+  /** Does not validate. */
+  val noOp: Validate[Any, Nothing] = of(_ => Vector.empty)
 }

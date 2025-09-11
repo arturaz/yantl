@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3
+
+**2025-09-11**
+
+- **BREAKING:** replaced `Newtype.validator` with `Newtype.validate`.
+- Added `Newtype.compose`, `Validate.noOp`.
+
 ## v0.2.4
 
 **2025-04-07**

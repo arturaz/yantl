@@ -14,11 +14,12 @@ trait Newtype { self =>
   /** Allows requiring this companion object in `using` clauses. */
   transparent inline given instance: Newtype.WithType[TUnderlying, Type] = this
 
-  def validator: Validator[TUnderlying, TError] = Validator.noOp
+  /** The [[Validate]] instance for this [[Newtype]]. */
+  def validate: Validate[TUnderlying, TError]
 
   object make extends Make[TUnderlying, TError, Type] {
     override def apply(input: TUnderlying): Either[Vector[TError], Type] = {
-      val errors = validator.validate(input)
+      val errors = self.validate.validate(input)
 
       if (errors.isEmpty) Right(input) else Left(errors)
     }
@@ -34,6 +35,29 @@ trait Newtype { self =>
     /** Unwraps the value from the newtype to the underlying type. */
     def unwrap: TUnderlying = v
   }
+
+  /** Composes this [[Newtype]] with another [[Newtype]] that uses [[Type]] as
+    * the underlying type.
+    *
+    * For example: `String -> Email -> GoogleMailEmail`
+    */
+  def compose(
+      other: Newtype.WithUnderlying[Type]
+  ): Newtype.WithUnderlyingAndError[TUnderlying, TError | other.TError] =
+    new Newtype {
+      override type TUnderlying = self.TUnderlying
+      override type TError = self.TError | other.TError
+
+      override val validate: Validate[TUnderlying, TError] = Validate.of {
+        underlying =>
+          self.make(underlying) match {
+            case Left(errors)        => errors
+            case Right(intermediary) => other.validate.validate(intermediary)
+          }
+      }
+
+      override def toString = s"ComposedNewtype($self -> $other)"
+    }
 }
 object Newtype {
 
@@ -58,10 +82,12 @@ object Newtype {
     * }}}
     */
   trait ValidatedOf[TUnderlying_, TError_](
-      override val validator: Validator[TUnderlying_, TError_]
+      val validator: Validator[TUnderlying_, TError_]
   ) extends Newtype {
     type TUnderlying = TUnderlying_
     type TError = TError_
+
+    override def validate: Validate[TUnderlying_, TError_] = validator
   }
 
   /** The `Aux` type helper, to easily specify the underlying type.
@@ -122,8 +148,7 @@ object Newtype {
     transparent inline given instanceForUnvalidated
         : Newtype.WithUnvalidatedType[TUnderlying, Type] = this
 
-    final override def validator: Validator[TUnderlying, TError] =
-      Validator.noOp
+    final override def validate: Validate[TUnderlying, TError] = Validate.noOp
 
     // Not final as the extending type can add extra logic to making these types.
     def apply(input: TUnderlying): Type = make.apply(input) match {

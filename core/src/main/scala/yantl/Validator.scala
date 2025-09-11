@@ -46,7 +46,7 @@ trait Validator[-Input, +Error] extends Validate[Input, Error] { self =>
       self.validate(inputMapper(input)).map(errorMapper)
   }
 
-  /** Combines two validators into one. */
+  /** Combines two validators for the same input type into one. */
   infix def and[OtherInput <: Input, OtherError](
       that: Validator[OtherInput, OtherError]
   ): Validator[OtherInput, Error | OtherError] = new {
