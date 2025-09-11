@@ -138,14 +138,14 @@
 
 </span><span class="comment">// The instances are automatically provided
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">SerializeToString</span><span>[</span><span class="type-name">Age</span><span>]]
-</span><span class="comment">// res0: SerializeToString[Type] = repl.MdocSession$MdocApp$$Lambda$12895/0x000000010338b440@541bec36
+</span><span class="comment">// res0: SerializeToString[Type] = repl.MdocSession$MdocApp$$Lambda$13083/0x0000000103468440@67d64fbe
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">DeserializeFromString</span><span>[</span><span class="type-name">Age</span><span>]]
-</span><span class="comment">// res1: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$12897/0x000000010338c440@6088c870
+</span><span class="comment">// res1: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$13085/0x0000000103469440@2b466d65
 </span><span>
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">SerializeToString</span><span>[</span><span class="type-name">Name</span><span>]]
-</span><span class="comment">// res2: SerializeToString[Type] = repl.MdocSession$MdocApp$$Lambda$12895/0x000000010338b440@370cccf7
+</span><span class="comment">// res2: SerializeToString[Type] = repl.MdocSession$MdocApp$$Lambda$13083/0x0000000103468440@13cf1b36
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">DeserializeFromString</span><span>[</span><span class="type-name">Name</span><span>]]
-</span><span class="comment">// res3: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$12897/0x000000010338c440@31bd1ccc</span></code></pre>
+</span><span class="comment">// res3: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$13085/0x0000000103469440@1839a5f9</span></code></pre>
         <p>You can also provide instances only for unvalidated newtypes:</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">given</span><span> </span><span class="identifier">newTypeDeserializeUnvalidatedFromString</span><span>[</span><span class="type-name">TUnderlying</span><span>, </span><span class="type-name">TWrapper</span><span>](</span><span class="identifier">using</span><span>
   </span><span class="identifier">newType</span><span>: </span><span class="identifier">yantl</span><span>.</span><span class="type-name">Newtype</span><span>.</span><span class="type-name">WithUnvalidatedType</span><span>[</span><span class="type-name">TUnderlying</span><span>, </span><span class="type-name">TWrapper</span><span>],
@@ -155,7 +155,7 @@
 
 </span><span class="comment">// The instance is automatically provided
 </span><span class="identifier">summon</span><span>[</span><span class="type-name">DeserializeFromString</span><span>[</span><span class="type-name">Name</span><span>]]
-</span><span class="comment">// res4: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$12900/0x000000010338d840@7fa37fe9</span></code></pre>
+</span><span class="comment">// res4: DeserializeFromString[Type] = repl.MdocSession$MdocApp$$Lambda$13088/0x000000010346a840@14927ebb</span></code></pre>
 
         
 <hr class="footer-rule"/>

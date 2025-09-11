@@ -89,6 +89,7 @@
     <li class="level1 nav-leaf"><a href="#with-validation">With Validation</a></li>
     <li class="level1 nav-leaf"><a href="#without-validation">Without Validation</a></li>
     <li class="level1 nav-leaf"><a href="#intermediatary-newtypes">Intermediatary Newtypes</a></li>
+    <li class="level1 nav-leaf"><a href="#chained-newtypes">Chained Newtypes</a></li>
     <li class="level1 nav-leaf"><a href="#best-practices">Best Practices</a></li>
   </ul>
 
@@ -106,7 +107,7 @@
         inferred from the validator rules:</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">yantl</span><span>.*
 
-</span><span class="keyword">object</span><span> </span><span class="type-name">Age</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Newtype</span><span>.</span><span class="type-name">ValidatedOf</span><span>(</span><span class="type-name">Validator</span><span>.</span><span class="identifier">of</span><span>(</span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">minValue</span><span>(</span><span class="number-literal">0L</span><span>)))
+</span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Age</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Newtype</span><span>.</span><span class="type-name">ValidatedOf</span><span>(</span><span class="type-name">Validator</span><span>.</span><span class="identifier">of</span><span>(</span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">minValue</span><span>(</span><span class="number-literal">0L</span><span>)))
 </span><span class="keyword">type</span><span> </span><span class="type-name">Age</span><span> = </span><span class="type-name">Age</span><span>.</span><span class="type-name">Type</span></code></pre>
         <p>This creates an <code>Age</code> type that:</p>
         <ul>
@@ -147,7 +148,7 @@
 </span><span class="comment">// java.lang.IllegalArgumentException: Cannot be smaller than 0, was -5.
 // 	at yantl.Make.orThrow(Make.scala:47)
 // 	at yantl.Make.orThrow$(Make.scala:15)
-// 	at yantl.Newtype$make$.orThrow(Newtype.scala:19)
+// 	at yantl.Newtype$make$.orThrow(Newtype.scala:20)
 // 	at repl.MdocSession$MdocApp.$init$$$anonfun$1(001_defining_newtypes.md:49)</span></code></pre>
         
         <h2 id="without-validation" class="section"><a class="anchor-link left" href="#without-validation"><i class="icofont-laika link">&#xef71;</i></a>Without Validation</h2>
@@ -179,7 +180,7 @@
   </span><span class="comment">// Unfortunately you have to repeat the type here
 </span><span>  </span><span class="keyword">type</span><span> </span><span class="type-name">TError</span><span> = </span><span class="type-name">ValidatorRule</span><span>.</span><span class="type-name">HadSurroundingWhitespace</span><span> | </span><span class="type-name">ValidatorRule</span><span>.</span><span class="type-name">WasBlank</span><span>
 
-  </span><span class="keyword">override</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">validator</span><span> = </span><span class="type-name">NewtypeNonEmptyString</span><span>.</span><span class="identifier">validator</span><span>
+  </span><span class="keyword">override</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">validate</span><span> = </span><span class="type-name">NewtypeNonEmptyString</span><span>.</span><span class="identifier">validator</span><span>
 }
 </span><span class="keyword">object</span><span> </span><span class="type-name">NewtypeNonEmptyString</span><span> {
   </span><span class="keyword">val</span><span> </span><span class="identifier">validator</span><span> = </span><span class="type-name">Validator</span><span>.</span><span class="identifier">of</span><span>(
@@ -188,7 +189,7 @@
   )
 }</span></code></pre>
         <p>Then, end-user code can use <code>NewtypeNonEmptyString</code> to get the <code>Ordering</code> instance for free:</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">object</span><span> </span><span class="type-name">ForumTopic</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">NewtypeNonEmptyString</span><span>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">ForumTopic</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">NewtypeNonEmptyString</span><span>
 </span><span class="keyword">type</span><span> </span><span class="type-name">ForumTopic</span><span> = </span><span class="type-name">ForumTopic</span><span>.</span><span class="type-name">Type</span><span>
 
 </span><span class="type-name">ForumTopic</span><span>.</span><span class="identifier">make</span><span>(</span><span class="string-literal">&quot;What are newtypes?&quot;</span><span>)
@@ -199,13 +200,13 @@
 //   value = Vector(WasBlank(value = &quot;&quot;))
 // )</span></code></pre>
         <p>Or they can refine the type even further:</p>
-        <pre><code class="nohighlight"><span class="keyword">object</span><span> </span><span class="type-name">ForumTopicStrict</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">NewtypeString</span><span> {
+        <pre><code class="nohighlight"><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">ForumTopicStrict</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">NewtypeString</span><span> {
   </span><span class="keyword">type</span><span> </span><span class="type-name">TError</span><span> =
     </span><span class="type-name">ValidatorRule</span><span>.</span><span class="type-name">HadSurroundingWhitespace</span><span> | 
       </span><span class="type-name">ValidatorRule</span><span>.</span><span class="type-name">WasBlank</span><span> | 
       </span><span class="type-name">ValidatorRule</span><span>.</span><span class="type-name">UnderMinLength</span><span>[</span><span class="type-name">String</span><span>]
 
-  </span><span class="keyword">override</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">validator</span><span> = 
+  </span><span class="keyword">override</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">validate</span><span> = 
     </span><span class="type-name">NewtypeNonEmptyString</span><span>.</span><span class="identifier">validator</span><span> </span><span class="identifier">and</span><span> </span><span class="type-name">Validator</span><span>.</span><span class="identifier">of</span><span>(</span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">minLength</span><span>(</span><span class="number-literal">10</span><span>))
 }
 </span><span class="keyword">type</span><span> </span><span class="type-name">ForumTopicStrict</span><span> = </span><span class="type-name">ForumTopicStrict</span><span>.</span><span class="type-name">Type</span><span>
@@ -219,6 +220,44 @@
 //     UnderMinLength(minLength = 10, actualLength = 9, actual = &quot;newtypes?&quot;)
 //   )
 // )</span></code></pre>
+        
+        <h2 id="chained-newtypes" class="section"><a class="anchor-link left" href="#chained-newtypes"><i class="icofont-laika link">&#xef71;</i></a>Chained Newtypes</h2>
+        <p>You can have newtypes that are based off other newtypes. For example, you can define an <code>Email</code> newtype and then more 
+        specific <code>GoogleMailEmail</code> newtype that refines <code>Email</code> even more.</p>
+        <pre><code class="nohighlight"><span class="keyword">case</span><span> </span><span class="keyword">class</span><span> </span><span class="type-name">NotAnEmail</span><span>(</span><span class="identifier">email</span><span>: </span><span class="type-name">String</span><span>)
+</span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Email</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Newtype</span><span>.</span><span class="type-name">ValidatedOf</span><span>(</span><span class="type-name">Validator</span><span>.</span><span class="identifier">of</span><span>(
+  </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">of</span><span> { (</span><span class="identifier">email</span><span>: </span><span class="type-name">String</span><span>) =&gt;
+    </span><span class="keyword">if</span><span> (</span><span class="identifier">email</span><span>.</span><span class="identifier">contains</span><span>(</span><span class="string-literal">&quot;@&quot;</span><span>)) </span><span class="type-name">None</span><span> </span><span class="keyword">else</span><span> </span><span class="type-name">Some</span><span>(</span><span class="type-name">NotAnEmail</span><span>(</span><span class="identifier">email</span><span>))
+  }
+))
+</span><span class="keyword">type</span><span> </span><span class="type-name">Email</span><span> = </span><span class="type-name">Email</span><span>.</span><span class="type-name">Type</span><span>
+
+</span><span class="keyword">case</span><span> </span><span class="keyword">class</span><span> </span><span class="type-name">NotAGoogleMail</span><span>(</span><span class="identifier">email</span><span>: </span><span class="type-name">Email</span><span>)
+</span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">GoogleMailEmail</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Newtype</span><span>.</span><span class="type-name">ValidatedOf</span><span>(</span><span class="type-name">Validator</span><span>.</span><span class="identifier">of</span><span>(
+  </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">of</span><span> { (</span><span class="identifier">email</span><span>: </span><span class="type-name">Email</span><span>) =&gt;
+    </span><span class="keyword">if</span><span> (</span><span class="type-name">Email</span><span>.</span><span class="identifier">unwrap</span><span>(</span><span class="identifier">email</span><span>).</span><span class="identifier">endsWith</span><span>(</span><span class="string-literal">&quot;@gmail.com&quot;</span><span>)) </span><span class="type-name">None</span><span> </span><span class="keyword">else</span><span> </span><span class="type-name">Some</span><span>(</span><span class="type-name">NotAGoogleMail</span><span>(</span><span class="identifier">email</span><span>))
+  }
+))
+
+</span><span class="keyword">val</span><span> </span><span class="type-name">ChainedGoogleMailEmail</span><span> = </span><span class="type-name">Email</span><span>.</span><span class="identifier">compose</span><span>(</span><span class="type-name">GoogleMailEmail</span><span>)
+</span><span class="comment">// ChainedGoogleMailEmail: Newtype {
+</span><span>  </span><span class="keyword">type</span><span> </span><span class="type-name">TUnderlying</span><span> &gt;: </span><span class="type-name">TUnderlying</span><span> &lt;: </span><span class="type-name">TUnderlying</span><span>
+  </span><span class="keyword">type</span><span> </span><span class="type-name">TError</span><span> &gt;: </span><span class="type-name">TError</span><span> | </span><span class="type-name">TError</span><span> &lt;: </span><span class="type-name">TError</span><span> | </span><span class="type-name">TError</span><span>
+} = </span><span class="type-name">ComposedNewtype</span><span>(</span><span class="type-name">Email</span><span> -&gt; </span><span class="type-name">GoogleMailEmail</span><span>)
+</span><span class="keyword">type</span><span> </span><span class="type-name">ChainedGoogleMailEmail</span><span> = </span><span class="type-name">ChainedGoogleMailEmail</span><span>.</span><span class="type-name">Type</span><span>
+
+</span><span class="type-name">ChainedGoogleMailEmail</span><span>.</span><span class="identifier">make</span><span>(</span><span class="string-literal">&quot;foo&quot;</span><span>)
+</span><span class="comment">// res10: Either[Vector[TError], Type] = Left(
+//   value = Vector(NotAnEmail(email = &quot;foo&quot;))
+// )
+</span><span>
+</span><span class="type-name">ChainedGoogleMailEmail</span><span>.</span><span class="identifier">make</span><span>(</span><span class="string-literal">&quot;foo@outlook.com&quot;</span><span>)
+</span><span class="comment">// res11: Either[Vector[TError], Type] = Left(
+//   value = Vector(NotAGoogleMail(email = &quot;foo@outlook.com&quot;))
+// )
+</span><span>
+</span><span class="type-name">ChainedGoogleMailEmail</span><span>.</span><span class="identifier">make</span><span>(</span><span class="string-literal">&quot;foo@gmail.com&quot;</span><span>)
+</span><span class="comment">// res12: Either[Vector[TError], Type] = Right(value = &quot;foo@gmail.com&quot;)</span></code></pre>
         
         <h2 id="best-practices" class="section"><a class="anchor-link left" href="#best-practices"><i class="icofont-laika link">&#xef71;</i></a>Best Practices</h2>
         <ol class="arabic">

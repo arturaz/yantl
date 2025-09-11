@@ -105,43 +105,43 @@
         <pre><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">yantl</span><span>.*
 
 </span><span class="keyword">val</span><span> </span><span class="identifier">minValueValidator</span><span> = </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">minValue</span><span>(</span><span class="number-literal">0L</span><span>)
-</span><span class="comment">// minValueValidator: ValidatorRule[Long, SmallerThan[Long]] = yantl.ValidatorRule$$$Lambda$12443/0x000000010322c840@665041d5
+</span><span class="comment">// minValueValidator: ValidatorRule[Long, SmallerThan[Long]] = yantl.ValidatorRule$$$Lambda$12843/0x00000001033a0c40@11a7c2f9
 </span><span>
 </span><span class="keyword">val</span><span> </span><span class="identifier">maxValueValidator</span><span> = </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">maxValue</span><span>(</span><span class="number-literal">100L</span><span>)
-</span><span class="comment">// maxValueValidator: ValidatorRule[Long, LargerThan[Long]] = yantl.ValidatorRule$$$Lambda$12726/0x0000000103303440@624505ee
+</span><span class="comment">// maxValueValidator: ValidatorRule[Long, LargerThan[Long]] = yantl.ValidatorRule$$$Lambda$12938/0x00000001033ed840@5e979c97
 </span><span>
 </span><span class="keyword">val</span><span> </span><span class="identifier">betweenValidator</span><span> = </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">between</span><span>(</span><span class="number-literal">0L</span><span>, </span><span class="number-literal">100L</span><span>)
-</span><span class="comment">// betweenValidator: ValidatorRule[Long, SmallerThan[Long] | LargerThan[Long]] = yantl.ValidatorRule$$$Lambda$12727/0x0000000103305040@33613777
+</span><span class="comment">// betweenValidator: ValidatorRule[Long, SmallerThan[Long] | LargerThan[Long]] = yantl.ValidatorRule$$$Lambda$12939/0x00000001033edc40@2782934d
 </span><span>
 </span><span class="keyword">val</span><span> </span><span class="identifier">minLengthOfVectorValidator</span><span> = </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">minLength</span><span>(</span><span class="number-literal">2</span><span>, </span><span class="identifier">getLength</span><span> = (</span><span class="identifier">_</span><span>: </span><span class="type-name">Vector</span><span>[</span><span class="type-name">String</span><span>]).</span><span class="identifier">size</span><span>)
-</span><span class="comment">// minLengthOfVectorValidator: ValidatorRule[Vector[String], UnderMinLength[Vector[String]]] = yantl.ValidatorRule$$$Lambda$12453/0x0000000103236840@4272dae4
+</span><span class="comment">// minLengthOfVectorValidator: ValidatorRule[Vector[String], UnderMinLength[Vector[String]]] = yantl.ValidatorRule$$$Lambda$12855/0x00000001033a7440@2295461e
 </span><span>
 </span><span class="keyword">val</span><span> </span><span class="identifier">maxLengthOfVectorValidator</span><span> = </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">maxLength</span><span>(</span><span class="number-literal">50</span><span>, </span><span class="identifier">getLength</span><span> = (</span><span class="identifier">_</span><span>: </span><span class="type-name">Vector</span><span>[</span><span class="type-name">String</span><span>]).</span><span class="identifier">size</span><span>)
-</span><span class="comment">// maxLengthOfVectorValidator: ValidatorRule[Vector[String], MaxLengthExceeded[Vector[String]]] = yantl.ValidatorRule$$$Lambda$12730/0x0000000103306c40@50b9fa0b
+</span><span class="comment">// maxLengthOfVectorValidator: ValidatorRule[Vector[String], MaxLengthExceeded[Vector[String]]] = yantl.ValidatorRule$$$Lambda$12942/0x00000001033f0040@6ddd1c4
 </span><span>
 </span><span class="keyword">val</span><span> </span><span class="identifier">minLengthValidator</span><span> = </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">minLength</span><span>(</span><span class="number-literal">2</span><span>)
-</span><span class="comment">// minLengthValidator: ValidatorRule[String, UnderMinLength[String]] = yantl.ValidatorRule$$$Lambda$12453/0x0000000103236840@801f3cb
+</span><span class="comment">// minLengthValidator: ValidatorRule[String, UnderMinLength[String]] = yantl.ValidatorRule$$$Lambda$12855/0x00000001033a7440@1807f03e
 </span><span>
 </span><span class="keyword">val</span><span> </span><span class="identifier">maxLengthValidator</span><span> = </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">maxLength</span><span>(</span><span class="number-literal">50</span><span>)
-</span><span class="comment">// maxLengthValidator: ValidatorRule[String, MaxLengthExceeded[String]] = yantl.ValidatorRule$$$Lambda$12730/0x0000000103306c40@39b0b
+</span><span class="comment">// maxLengthValidator: ValidatorRule[String, MaxLengthExceeded[String]] = yantl.ValidatorRule$$$Lambda$12942/0x00000001033f0040@5aff57d8
 </span><span>
 </span><span class="keyword">val</span><span> </span><span class="identifier">nonEmptyValidator</span><span> = </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">nonEmpty</span><span>(</span><span class="identifier">isEmpty</span><span> = (</span><span class="identifier">_</span><span>: </span><span class="type-name">Vector</span><span>[</span><span class="type-name">String</span><span>]).</span><span class="identifier">isEmpty</span><span>)
-</span><span class="comment">// nonEmptyValidator: ValidatorRule[Vector[String], WasEmpty[Vector[String]]] = yantl.ValidatorRule$$$Lambda$12733/0x0000000103309840@32977724
+</span><span class="comment">// nonEmptyValidator: ValidatorRule[Vector[String], WasEmpty[Vector[String]]] = yantl.ValidatorRule$$$Lambda$12945/0x00000001033f1c40@68b057fc
 </span><span>
 </span><span class="keyword">val</span><span> </span><span class="identifier">nonEmptyStringValidator</span><span> = </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">nonEmptyString</span><span>
-</span><span class="comment">// nonEmptyStringValidator: ValidatorRule[String, WasEmpty[String]] = yantl.ValidatorRule$$$Lambda$12733/0x0000000103309840@4be54a8f
+</span><span class="comment">// nonEmptyStringValidator: ValidatorRule[String, WasEmpty[String]] = yantl.ValidatorRule$$$Lambda$12945/0x00000001033f1c40@5f8b2375
 </span><span>
 </span><span class="keyword">val</span><span> </span><span class="identifier">nonBlankStringValidator</span><span> = </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">nonBlankString</span><span>
-</span><span class="comment">// nonBlankStringValidator: ValidatorRule[String, WasBlank] = yantl.ValidatorRule$$$Lambda$12450/0x0000000103231440@45df0e94
+</span><span class="comment">// nonBlankStringValidator: ValidatorRule[String, WasBlank] = yantl.ValidatorRule$$$Lambda$12852/0x00000001033a7840@50a17768
 </span><span>
 </span><span class="keyword">val</span><span> </span><span class="identifier">withoutSurroundingWhitespaceValidator</span><span> = </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">withoutSurroundingWhitespace</span><span>
-</span><span class="comment">// withoutSurroundingWhitespaceValidator: ValidatorRule[String, HadSurroundingWhitespace] = yantl.ValidatorRule$$$Lambda$12451/0x0000000103237840@a01e50f</span></code></pre>
+</span><span class="comment">// withoutSurroundingWhitespaceValidator: ValidatorRule[String, HadSurroundingWhitespace] = yantl.ValidatorRule$$$Lambda$12853/0x00000001033a7c40@120bd03a</span></code></pre>
         
         <h2 id="custom-rules" class="section"><a class="anchor-link left" href="#custom-rules"><i class="icofont-laika link">&#xef71;</i></a>Custom Rules</h2>
         <p>You can define your own <code>ValidatorRule</code> using the <code>ValidatorRule.of</code> method:</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">case</span><span> </span><span class="keyword">class</span><span> </span><span class="type-name">NotEven</span><span>(</span><span class="identifier">value</span><span>: </span><span class="type-name">Long</span><span>)
 </span><span class="keyword">val</span><span> </span><span class="identifier">isEven</span><span> = </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">of</span><span>((</span><span class="identifier">v</span><span>: </span><span class="type-name">Long</span><span>) =&gt; </span><span class="keyword">if</span><span> </span><span class="identifier">v</span><span> % </span><span class="number-literal">2</span><span> == </span><span class="number-literal">0</span><span> </span><span class="keyword">then</span><span> </span><span class="type-name">None</span><span> </span><span class="keyword">else</span><span> </span><span class="type-name">Some</span><span>(</span><span class="type-name">NotEven</span><span>(</span><span class="identifier">v</span><span>)))
-</span><span class="comment">// isEven: ValidatorRule[Long, NotEven] = yantl.ValidatorRule$$$Lambda$12736/0x000000010330fc40@111da0b</span></code></pre>
+</span><span class="comment">// isEven: ValidatorRule[Long, NotEven] = yantl.ValidatorRule$$$Lambda$12857/0x00000001033b7c40@72cec25d</span></code></pre>
         
         <h2 id="validator" class="section"><a class="anchor-link left" href="#validator"><i class="icofont-laika link">&#xef71;</i></a>Validator</h2>
         <p>The <code>Validator</code> object is used to combine multiple <code>ValidatorRule</code> objects into a single validator.</p>
@@ -150,7 +150,7 @@
 </span><span class="keyword">val</span><span> </span><span class="identifier">validator</span><span> = </span><span class="type-name">Validator</span><span>.</span><span class="identifier">of</span><span>(
   </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">minValue</span><span>(</span><span class="number-literal">0L</span><span>), </span><span class="type-name">ValidatorRule</span><span>.</span><span class="identifier">maxValue</span><span>(</span><span class="number-literal">100L</span><span>), </span><span class="identifier">isEven</span><span>
 )
-</span><span class="comment">// validator: Validator[Long, SmallerThan[Long] | LargerThan[Long] | NotEven] = yantl.Validator$$anon$6@cfaad68
+</span><span class="comment">// validator: Validator[Long, SmallerThan[Long] | LargerThan[Long] | NotEven] = yantl.Validator$$anon$6@7ff94311
 </span><span>
 </span><span class="identifier">validator</span><span>.</span><span class="identifier">validate</span><span>(</span><span class="number-literal">50</span><span>)
 </span><span class="comment">// res0: Vector[SmallerThan[Long] | LargerThan[Long] | NotEven] = Vector()
