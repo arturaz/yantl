@@ -148,7 +148,7 @@
 </span><span class="comment">// java.lang.IllegalArgumentException: Cannot be smaller than 0, was -5.
 // 	at yantl.Make.orThrow(Make.scala:47)
 // 	at yantl.Make.orThrow$(Make.scala:15)
-// 	at yantl.Newtype$make$.orThrow(Newtype.scala:20)
+// 	at yantl.INewtype$make$.orThrow(Newtype.scala:31)
 // 	at repl.MdocSession$MdocApp.$init$$$anonfun$1(001_defining_newtypes.md:49)</span></code></pre>
         
         <h2 id="without-validation" class="section"><a class="anchor-link left" href="#without-validation"><i class="icofont-laika link">&#xef71;</i></a>Without Validation</h2>
@@ -240,24 +240,27 @@
 ))
 
 </span><span class="keyword">val</span><span> </span><span class="type-name">ChainedGoogleMailEmail</span><span> = </span><span class="type-name">Email</span><span>.</span><span class="identifier">compose</span><span>(</span><span class="type-name">GoogleMailEmail</span><span>)
-</span><span class="comment">// ChainedGoogleMailEmail: Newtype {
+</span><span class="comment">// ChainedGoogleMailEmail: INewtype {
 </span><span>  </span><span class="keyword">type</span><span> </span><span class="type-name">TUnderlying</span><span> &gt;: </span><span class="type-name">TUnderlying</span><span> &lt;: </span><span class="type-name">TUnderlying</span><span>
   </span><span class="keyword">type</span><span> </span><span class="type-name">TError</span><span> &gt;: </span><span class="type-name">TError</span><span> | </span><span class="type-name">TError</span><span> &lt;: </span><span class="type-name">TError</span><span> | </span><span class="type-name">TError</span><span>
+  </span><span class="keyword">type</span><span> </span><span class="type-name">Type</span><span> &gt;: </span><span class="type-name">Type</span><span> &lt;: </span><span class="type-name">Type</span><span>
 } = </span><span class="type-name">ComposedNewtype</span><span>(</span><span class="type-name">Email</span><span> -&gt; </span><span class="type-name">GoogleMailEmail</span><span>)
 </span><span class="keyword">type</span><span> </span><span class="type-name">ChainedGoogleMailEmail</span><span> = </span><span class="type-name">ChainedGoogleMailEmail</span><span>.</span><span class="type-name">Type</span><span>
 
-</span><span class="type-name">ChainedGoogleMailEmail</span><span>.</span><span class="identifier">make</span><span>(</span><span class="string-literal">&quot;foo&quot;</span><span>)
-</span><span class="comment">// res10: Either[Vector[TError], Type] = Left(
+</span><span class="keyword">val</span><span> </span><span class="identifier">notAnEmail</span><span> = </span><span class="type-name">ChainedGoogleMailEmail</span><span>.</span><span class="identifier">make</span><span>(</span><span class="string-literal">&quot;foo&quot;</span><span>)
+</span><span class="comment">// notAnEmail: Either[Vector[TError], Type] = Left(
 //   value = Vector(NotAnEmail(email = &quot;foo&quot;))
 // )
 </span><span>
-</span><span class="type-name">ChainedGoogleMailEmail</span><span>.</span><span class="identifier">make</span><span>(</span><span class="string-literal">&quot;foo@outlook.com&quot;</span><span>)
-</span><span class="comment">// res11: Either[Vector[TError], Type] = Left(
+</span><span class="keyword">val</span><span> </span><span class="identifier">outlook</span><span> = </span><span class="type-name">ChainedGoogleMailEmail</span><span>.</span><span class="identifier">make</span><span>(</span><span class="string-literal">&quot;foo@outlook.com&quot;</span><span>)
+</span><span class="comment">// outlook: Either[Vector[TError], Type] = Left(
 //   value = Vector(NotAGoogleMail(email = &quot;foo@outlook.com&quot;))
 // )
 </span><span>
-</span><span class="type-name">ChainedGoogleMailEmail</span><span>.</span><span class="identifier">make</span><span>(</span><span class="string-literal">&quot;foo@gmail.com&quot;</span><span>)
-</span><span class="comment">// res12: Either[Vector[TError], Type] = Right(value = &quot;foo@gmail.com&quot;)</span></code></pre>
+</span><span class="keyword">val</span><span> </span><span class="identifier">gmail</span><span> = </span><span class="type-name">ChainedGoogleMailEmail</span><span>.</span><span class="identifier">make</span><span>(</span><span class="string-literal">&quot;foo@gmail.com&quot;</span><span>)
+</span><span class="comment">// gmail: Either[Vector[TError], Type] = Right(value = &quot;foo@gmail.com&quot;)
+</span><span class="identifier">gmail</span><span> == </span><span class="type-name">Email</span><span>.</span><span class="identifier">make</span><span>(</span><span class="string-literal">&quot;foo@gmail.com&quot;</span><span>).</span><span class="identifier">flatMap</span><span>(</span><span class="type-name">GoogleMailEmail</span><span>.</span><span class="identifier">make</span><span>(</span><span class="identifier">_</span><span>))
+</span><span class="comment">// res10: Boolean = true</span></code></pre>
         
         <h2 id="best-practices" class="section"><a class="anchor-link left" href="#best-practices"><i class="icofont-laika link">&#xef71;</i></a>Best Practices</h2>
         <ol class="arabic">
