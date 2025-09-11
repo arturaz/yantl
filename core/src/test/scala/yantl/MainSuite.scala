@@ -39,7 +39,7 @@ class MainSuite extends YantlSuite {
   test("chained: success") {
     assertRight(
       ChainedGoogleMailEmail.make("foo@gmail.com"),
-      ChainedGoogleMailEmail.make.unsafe("foo@gmail.com")
+      GoogleMailEmail.make.unsafe(Email.make.unsafe("foo@gmail.com"))
     )
   }
 

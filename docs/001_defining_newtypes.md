@@ -150,11 +150,12 @@ case object GoogleMailEmail extends Newtype.ValidatedOf(Validator.of(
 val ChainedGoogleMailEmail = Email.compose(GoogleMailEmail)
 type ChainedGoogleMailEmail = ChainedGoogleMailEmail.Type
 
-ChainedGoogleMailEmail.make("foo")
+val notAnEmail = ChainedGoogleMailEmail.make("foo")
 
-ChainedGoogleMailEmail.make("foo@outlook.com")
+val outlook = ChainedGoogleMailEmail.make("foo@outlook.com")
 
-ChainedGoogleMailEmail.make("foo@gmail.com")
+val gmail = ChainedGoogleMailEmail.make("foo@gmail.com")
+gmail == Email.make("foo@gmail.com").flatMap(GoogleMailEmail.make(_))
 ```
 
 ## Best Practices

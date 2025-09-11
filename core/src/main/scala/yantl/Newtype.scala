@@ -1,6 +1,7 @@
 package yantl
 
-trait Newtype { self =>
+/** Interface that defines the generic newtype functionality. */
+trait INewtype { self =>
 
   /** The type of errors that can be encountered while validating a value. */
   type TError
@@ -9,7 +10,7 @@ trait Newtype { self =>
   type TUnderlying
 
   /** The wrapped type. */
-  opaque type Type = TUnderlying
+  type Type
 
   /** Allows requiring this companion object in `using` clauses. */
   transparent inline given instance: Newtype.WithType[TUnderlying, Type] = this
@@ -17,23 +18,33 @@ trait Newtype { self =>
   /** The [[Validate]] instance for this [[Newtype]]. */
   def validate: Validate[TUnderlying, TError]
 
+  /** Returns the wrapped value as the underlying type.
+    *
+    * @note
+    *   the weird name is here so it wouldn't clash with the extension method.
+    */
+  protected def protected_unwrap(wrapped: Type): TUnderlying
+
+  /** Returns the underlying value as the wrapped type. */
+  protected def wrap(underlying: TUnderlying): Type
+
   object make extends Make[TUnderlying, TError, Type] {
     override def apply(input: TUnderlying): Either[Vector[TError], Type] = {
       val errors = self.validate.validate(input)
 
-      if (errors.isEmpty) Right(input) else Left(errors)
+      if (errors.isEmpty) Right(wrap(input)) else Left(errors)
     }
 
     /** Creates a new instance of the wrapped type without validating it. */
     override def unsafe(input: TUnderlying): Type =
-      input
+      wrap(input)
   }
   given Make[TUnderlying, TError, Type] = make
 
   extension (v: Type) {
 
     /** Unwraps the value from the newtype to the underlying type. */
-    def unwrap: TUnderlying = v
+    def unwrap: TUnderlying = self.protected_unwrap(v)
   }
 
   /** Composes this [[Newtype]] with another [[Newtype]] that uses [[Type]] as
@@ -43,10 +54,19 @@ trait Newtype { self =>
     */
   def compose(
       other: Newtype.WithUnderlying[Type]
-  ): Newtype.WithUnderlyingAndError[TUnderlying, TError | other.TError] =
-    new Newtype {
+  ): Newtype.WithTypeAndError[TUnderlying, other.Type, TError | other.TError] =
+    new INewtype {
       override type TUnderlying = self.TUnderlying
       override type TError = self.TError | other.TError
+      override type Type = other.Type
+
+      override protected def protected_unwrap(
+          wrapped: other.Type
+      ): TUnderlying =
+        self.unwrap(other.unwrap(wrapped))
+
+      override protected def wrap(underlying: TUnderlying): other.Type =
+        other.wrap(self.wrap(underlying))
 
       override val validate: Validate[TUnderlying, TError] = Validate.of {
         underlying =>
@@ -58,6 +78,20 @@ trait Newtype { self =>
 
       override def toString = s"ComposedNewtype($self -> $other)"
     }
+}
+
+/** Implementation of [[INewtype]] that forces [[INewtype.Type]] to be an opaque
+  * type of [[TUnderlying]].
+  */
+trait Newtype extends INewtype { self =>
+
+  /** The wrapped type. */
+  opaque type Type = TUnderlying
+
+  override protected final def protected_unwrap(wrapped: Type): TUnderlying =
+    wrapped
+
+  override protected final def wrap(underlying: TUnderlying): Type = underlying
 }
 object Newtype {
 
@@ -97,11 +131,11 @@ object Newtype {
     * def doThingsWithStrings(using newType: Newtype.WithUnderlying[String]): newType.Type
     * }}}
     */
-  type WithUnderlying[TUnderlying_] = Newtype {
+  type WithUnderlying[TUnderlying_] = INewtype {
     type TUnderlying = TUnderlying_
   }
 
-  type WithUnderlyingAndError[TUnderlying_, TError_] = Newtype {
+  type WithUnderlyingAndError[TUnderlying_, TError_] = INewtype {
     type TUnderlying = TUnderlying_
     type TError = TError_
   }
@@ -113,20 +147,20 @@ object Newtype {
     * def doThingsWithStrings[TWrapped](using newType: Newtype.WithType[String, TWrapped]): TWrapped
     * }}}
     */
-  type WithType[TUnderlying_, TWrapper] = Newtype {
+  type WithType[TUnderlying_, TWrapper] = INewtype {
     type TUnderlying = TUnderlying_
     type Type = TWrapper
   }
 
   /** As [[WithType]] but with error type. */
-  type WithTypeAndError[TUnderlying_, TWrapper, TError_] = Newtype {
+  type WithTypeAndError[TUnderlying_, TWrapper, TError_] = INewtype {
     type TUnderlying = TUnderlying_
     type TError = TError_
     type Type = TWrapper
   }
 
   /** As [[WithType]] but for unvalidated newtypes. */
-  type WithUnvalidatedType[TUnderlying_, TWrapper] = Newtype &
+  type WithUnvalidatedType[TUnderlying_, TWrapper] = INewtype &
     WithoutValidation {
       type TUnderlying = TUnderlying_
       type Type = TWrapper
