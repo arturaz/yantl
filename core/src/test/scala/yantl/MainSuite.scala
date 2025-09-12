@@ -56,4 +56,19 @@ class MainSuite extends YantlSuite {
       Vector(NotAGoogleMail(Email.make.orThrow("foo@outlook.com")))
     )
   }
+
+  test("Validator.ofLazy") {
+    object Latitude
+        extends Newtype.ValidatedOf(
+          Validator.ofLazy(
+            ValidatorRule.between[Double](Latitude.MinValue, Latitude.MaxValue)
+          )
+        ) {
+      final val MinValue: Double = -90
+      final val MaxValue: Double = 90
+    }
+
+    assertRight(Latitude.make(55), Latitude.make.orThrow(55))
+    assert(Latitude.make(91).isLeft)
+  }
 }

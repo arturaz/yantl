@@ -62,6 +62,30 @@ object Validator {
     fromRules(IArray(rules*))
   }
 
+  /** A version of [[of]] that evaluates the rules lazily.
+    *
+    * Useful when you want to use something like this:
+    * {{{
+    * object Latitude
+    *     extends Newtype.ValidatedOf(
+    *       Validator.ofLazy(
+    *         ValidatorRule.between[Double](Latitude.MinValue, Latitude.MaxValue)
+    *       )
+    *     ) {
+    *   final val MinValue: Double = -90
+    *   final val MaxValue: Double = 90
+    * }
+    * }}}
+    */
+  def ofLazy[Input, Error](
+      rules: => ValidatorRule[Input, Error]*
+  ): Validator[Input, Error] = {
+    def rules_ = IArray(rules*)
+    new {
+      override lazy val rules = rules_
+    }
+  }
+
   def fromRules[Input, Error](
       rules: IArray[ValidatorRule[Input, Error]]
   ): Validator[Input, Error] = {
