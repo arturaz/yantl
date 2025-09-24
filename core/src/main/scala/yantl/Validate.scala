@@ -48,11 +48,17 @@ trait Validate[-TInput, +TError] { self =>
     if (errors.isEmpty) None else Some(Validator.errorsToString(errors))
   }
 
+  /** Changes the type of input. */
   def mapValidateInput[NewInput](
       f: NewInput => TInput
   ): Validate[NewInput, TError] =
     input => self.validate(f(input))
 
+  /** Contramaps this [[Validate]], changing the input and error types.
+    *
+    * This is more powerful than [[mapValidateBoth]] as it allows you to add
+    * extra validations to input.
+    */
   def emapValidateInput[NewInput, NewError >: TError](
       f: NewInput => Either[Vector[NewError], TInput]
   ): Validate[NewInput, NewError] =
@@ -63,11 +69,13 @@ trait Validate[-TInput, +TError] { self =>
       }
     }
 
+  /** Changes the type of the validation error. */
   def mapValidateError[NewError](
       f: TError => NewError
   ): Validate[TInput, NewError] =
     input => self.validate(input).map(f)
 
+  /** Changes the type of input and the validation error. */
   def mapValidateBoth[NewInput, NewError](
       inputMapper: NewInput => TInput,
       errorMapper: TError => NewError

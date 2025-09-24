@@ -13,6 +13,7 @@ package yantl
   *   The validated type.
   */
 trait Make[-TInput, +TError, +TOutput] extends Validate[TInput, TError] {
+  self =>
 
   /** Creates a new instance of the wrapped type, validating it first.
     *
@@ -53,4 +54,64 @@ trait Make[-TInput, +TError, +TOutput] extends Validate[TInput, TError] {
       case Left(value) => value
       case Right(_)    => Vector.empty
     }
+
+  override def mapValidateInput[NewInput](
+      f: NewInput => TInput
+  ): Make[NewInput, TError, TOutput] = new {
+    override def apply(input: NewInput): Either[Vector[TError], TOutput] =
+      self.apply(f(input))
+    override def unsafe(input: NewInput): TOutput = self.unsafe(f(input))
+  }
+
+  override def mapValidateError[NewError](
+      f: TError => NewError
+  ): Make[TInput, NewError, TOutput] = new {
+    override def apply(input: TInput): Either[Vector[NewError], TOutput] =
+      self.apply(input).left.map(_.map(f))
+    override def unsafe(input: TInput): TOutput = self.unsafe(input)
+  }
+
+  /** Maps the [[Make]] changing the input type and adding extra validation. */
+  def mapInputWithExtraValidation[NewInput, NewError >: TError](
+    mapValidated: NewInput => Either[Vector[NewError], TInput],
+    mapUnsafe: NewInput => TInput
+  ): Make[NewInput, NewError, TOutput] = new {
+    override def apply(input: NewInput): Either[Vector[NewError], TOutput] = mapValidated(
+      input
+    ) match {
+      case Left(errors) => Left(errors)
+      case Right(input) => self.apply(input)
+    }
+
+    override def unsafe(input: NewInput): TOutput = self.unsafe(mapUnsafe(input))
+  }
+
+  override def mapValidateBoth[NewInput, NewError](
+      inputMapper: NewInput => TInput,
+      errorMapper: TError => NewError
+  ): Make[NewInput, NewError, TOutput] = new {
+    override def apply(input: NewInput): Either[Vector[NewError], TOutput] =
+      self.apply(inputMapper(input)).left.map(_.map(errorMapper))
+
+    override def unsafe(input: NewInput): TOutput =
+      self.unsafe(inputMapper(input))
+  }
+}
+object Make {
+  extension [TInput, TError, TOutput](make: Make[TInput, TError, TOutput]) {
+
+    /** Maps the [[Make]] adding extra validation to the input, but keeping the input type the same. */
+    def mapExtraValidation[NewError >: TError](
+        f: TInput => Either[Vector[NewError], TInput]
+    ): Make[TInput, NewError, TOutput] = new {
+      override def apply(input: TInput): Either[Vector[NewError], TOutput] = f(
+        input
+      ) match {
+        case Left(errors) => Left(errors)
+        case Right(input) => make.apply(input)
+      }
+
+      override def unsafe(input: TInput): TOutput = make.unsafe(input)
+    }
+  }
 }

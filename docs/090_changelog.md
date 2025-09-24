@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4.1
+
+**2025-09-24**
+
+- Added `Make.mapInputWithExtraValidation`.
+- Overridden `Make` methods to return `Make` instances instead of `Validate` when using the various mapping method.
+
 ## v0.4.0
 
 **2025-09-12**
