@@ -73,17 +73,19 @@ trait Make[-TInput, +TError, +TOutput] extends Validate[TInput, TError] {
 
   /** Maps the [[Make]] changing the input type and adding extra validation. */
   def mapInputWithExtraValidation[NewInput, NewError >: TError](
-    mapValidated: NewInput => Either[Vector[NewError], TInput],
-    mapUnsafe: NewInput => TInput
+      mapValidated: NewInput => Either[Vector[NewError], TInput],
+      mapUnsafe: NewInput => TInput
   ): Make[NewInput, NewError, TOutput] = new {
-    override def apply(input: NewInput): Either[Vector[NewError], TOutput] = mapValidated(
-      input
-    ) match {
-      case Left(errors) => Left(errors)
-      case Right(input) => self.apply(input)
-    }
+    override def apply(input: NewInput): Either[Vector[NewError], TOutput] =
+      mapValidated(
+        input
+      ) match {
+        case Left(errors) => Left(errors)
+        case Right(input) => self.apply(input)
+      }
 
-    override def unsafe(input: NewInput): TOutput = self.unsafe(mapUnsafe(input))
+    override def unsafe(input: NewInput): TOutput =
+      self.unsafe(mapUnsafe(input))
   }
 
   override def mapValidateBoth[NewInput, NewError](
@@ -100,7 +102,9 @@ trait Make[-TInput, +TError, +TOutput] extends Validate[TInput, TError] {
 object Make {
   extension [TInput, TError, TOutput](make: Make[TInput, TError, TOutput]) {
 
-    /** Maps the [[Make]] adding extra validation to the input, but keeping the input type the same. */
+    /** Maps the [[Make]] adding extra validation to the input, but keeping the
+      * input type the same.
+      */
     def mapExtraValidation[NewError >: TError](
         f: TInput => Either[Vector[NewError], TInput]
     ): Make[TInput, NewError, TOutput] = new {
