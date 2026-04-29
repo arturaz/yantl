@@ -28,7 +28,9 @@ trait INewtype { self =>
   /** Returns the underlying value as the wrapped type. */
   protected def wrap(underlying: TUnderlying): Type
 
-  object make extends Make[TUnderlying, TError, Type] {
+  /** The default instance of [[Make]]. */
+  // noinspection ScalaWeakerAccess
+  protected object defaultMake extends Make[TUnderlying, TError, Type] {
     override def apply(input: TUnderlying): Either[Vector[TError], Type] = {
       val errors = self.validate.validate(input)
 
@@ -38,6 +40,20 @@ trait INewtype { self =>
     /** Creates a new instance of the wrapped type without validating it. */
     override def unsafe(input: TUnderlying): Type =
       wrap(input)
+  }
+
+  /** Allows overriding [[Make]], for example to provide input transformation
+    * before making.
+    */
+  // noinspection ScalaWeakerAccess
+  protected def resolveMake: Make[TUnderlying, TError, Type] = defaultMake
+
+  object make extends Make[TUnderlying, TError, Type] {
+    override def apply(input: TUnderlying): Either[Vector[TError], Type] =
+      resolveMake(input)
+
+    override def unsafe(input: TUnderlying): Type =
+      resolveMake.unsafe(input)
   }
   given Make[TUnderlying, TError, Type] = make
 

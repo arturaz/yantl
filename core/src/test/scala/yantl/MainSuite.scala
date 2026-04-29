@@ -71,4 +71,43 @@ class MainSuite extends YantlSuite {
     assertRight(Latitude.make(55), Latitude.make.orThrow(55))
     assert(Latitude.make(91).isLeft)
   }
+
+  test("Overriding make") {
+    object Email extends Newtype.WithoutValidationOf[String] {
+      override protected val resolveMake
+          : Make[String, Email.TError, Email.Type] =
+        super.resolveMake.mapValidateInput((input: String) =>
+          input.toLowerCase()
+        )
+    }
+
+    assertEquals(
+      Email.unwrap(Email("John.Smith@gMail.com")),
+      "john.smith@gmail.com"
+    )
+  }
+
+  test("Overriding make with validation") {
+    object StringNotLowercase
+
+    object Email
+        extends Newtype.ValidatedOf(
+          Validator.of(
+            ValidatorRule.of((str: String) =>
+              Option.when(str != str.toLowerCase())(StringNotLowercase)
+            )
+          )
+        ) {
+      override protected val resolveMake
+          : Make[String, Email.TError, Email.Type] =
+        super.resolveMake.mapValidateInput((input: String) =>
+          input.toLowerCase()
+        )
+    }
+
+    assertEquals(
+      Email.unwrap(Email.make.orThrow("John.Smith@gMail.com")),
+      "john.smith@gmail.com"
+    )
+  }
 }
