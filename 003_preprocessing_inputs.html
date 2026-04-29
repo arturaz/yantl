@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="Typelevel Laika + Helium Theme" />
-  <title>Yet Another Newtype Library - yantl</title>
+  <title>Preprocessing Inputs</title>
   
   <meta name="author" content="Artūras Šlajus"/>
   
@@ -22,7 +22,6 @@
   
   <link rel="stylesheet" type="text/css" href="helium/site/icofont.min.css" />
     <link rel="stylesheet" type="text/css" href="helium/site/laika-helium.css" />
-    <link rel="stylesheet" type="text/css" href="helium/site/landing-page.css" />
   <script src="helium/site/laika-helium.js"></script>
   
   
@@ -41,7 +40,7 @@
     
   </div>
 
-  <a class="icon-link glyph-link" href="#"><i class="icofont-laika home" title="Home">&#xef47;</i></a>
+  <a class="icon-link glyph-link" href="index.html"><i class="icofont-laika home" title="Home">&#xef47;</i></a>
 
   <div class="row links">
     
@@ -71,7 +70,7 @@
     <li class="level1 nav-leaf"><a href="000_installation.html">Installation</a></li>
     <li class="level1 nav-leaf"><a href="001_defining_newtypes.html">Defining Newtypes</a></li>
     <li class="level1 nav-leaf"><a href="002_validator_rules.html">Validator Rules</a></li>
-    <li class="level1 nav-leaf"><a href="003_preprocessing_inputs.html">Preprocessing Inputs</a></li>
+    <li class="level1 active nav-leaf"><a href="#">Preprocessing Inputs</a></li>
     <li class="level1 nav-leaf"><a href="004_providing_typeclasses.html">Providing Typeclasses</a></li>
     <li class="level1 nav-leaf"><a href="005_making_localized_error_messages.html">Localized Error Messages</a></li>
     <li class="level1 nav-leaf"><a href="006_standard_given_instances.html">Standard Given Instances</a></li>
@@ -85,14 +84,9 @@
 
       
 <nav id="page-nav">
-  <p class="header"><a href="#">Yet Another Newtype Library - yantl</a></p>
+  <p class="header"><a href="#">Preprocessing Inputs</a></p>
 
   <ul class="nav-list">
-    <li class="level1 nav-leaf"><a href="#motivation">Motivation</a></li>
-    <li class="level1 nav-node"><a href="#goals">Goals</a></li>
-    <li class="level2 nav-leaf"><a href="#be-macro-free">Be macro-free</a></li>
-    <li class="level2 nav-leaf"><a href="#support-flexible-composition-of-error-types">Support flexible composition of error types</a></li>
-    <li class="level1 nav-leaf"><a href="#next-steps">Next steps</a></li>
   </ul>
 
   <p class="footer"></p>
@@ -101,36 +95,21 @@
 
       <main class="content">
 
-        <h1 id="yet-another-newtype-library-yantl" class="title">Yet Another Newtype Library - yantl</h1>
-        <p>Yes, this is Yet Another Newtype Library for Scala, abbreviated as <code>yantl</code>.</p>
-        <p>Is it a horrible name? Probably. But I am bad at naming things.</p>
-        
-        <h3 id="motivation" class="section"><a class="anchor-link left" href="#motivation"><i class="icofont-laika link">&#xef71;</i></a>Motivation</h3>
-        <p>There are plently of options for newtypes in Scala, including:</p>
-        <ul>
-          <li><a href="https://github.com/estatico/scala-newtype">scala-newtype</a> - the original newtype library for Scala 2.x.</li>
-          <li><a href="https://github.com/monix/newtypes">Monix newtypes</a> - macro free newtype library for Scala 2.x and 3.x.</li>
-          <li><a href="https://github.com/kitlangton/neotype">neotype</a> - macro-based newtype library for 3.x providing compile-time
-          validation.</li>
-        </ul>
-        <p>However, they all presume that errors are strings. Which is not an option for localized applications, as you
-        have to translate the string to the user&#39;s language somehow, losing all type safety in the process.</p>
-        
-        <h3 id="goals" class="section"><a class="anchor-link left" href="#goals"><i class="icofont-laika link">&#xef71;</i></a>Goals</h3>
-        
-        <h4 id="be-macro-free" class="section"><a class="anchor-link left" href="#be-macro-free"><i class="icofont-laika link">&#xef71;</i></a>Be macro-free</h4>
-        <p>Macros seem great. You get compile-time checks for your types. Until you realise that the compiler has to
-        evaluate the macro at compile time and therefore you can only use a subset of Scala.</p>
-        <p>If you need compile time literal validation, I suggest using <a href="https://github.com/typelevel/literally">literally</a>.</p>
-        
-        <h4 id="support-flexible-composition-of-error-types" class="section"><a class="anchor-link left" href="#support-flexible-composition-of-error-types"><i class="icofont-laika link">&#xef71;</i></a>Support flexible composition of error types</h4>
-        <p>Yantl does not care what your error type is. There are some defined by default, but you can ignore them if you
-        choose to do so. Yantl only cares that after validating you get either an error or the newtype.</p>
-        <p>Turns out <code>Either[Vector[Error1 | Error2], MyNewType]</code> is a great encoding for that.</p>
-        <p>Which makes this library only available for Scala 3.</p>
-        
-        <h2 id="next-steps" class="section"><a class="anchor-link left" href="#next-steps"><i class="icofont-laika link">&#xef71;</i></a>Next steps</h2>
-        <p>Head over to <a href="000_installation.html">installation</a>.</p>
+        <h1 id="preprocessing-inputs" class="title">Preprocessing Inputs</h1>
+        <p>Sometimes you need to process the inputs to the newtype before validating them.</p>
+        <p>One particular case is emails. Email addresses are not case-sensitive, yet users might enter then capitalized.</p>
+        <p>Therefore, Yantl provides a way to preprocess the inputs.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">yantl</span><span>.*
+
+</span><span class="keyword">object</span><span> </span><span class="type-name">Email</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Newtype</span><span>.</span><span class="type-name">WithoutValidationOf</span><span>[</span><span class="type-name">String</span><span>] {
+  </span><span class="keyword">override</span><span> </span><span class="keyword">protected</span><span> </span><span class="keyword">val</span><span> </span><span class="identifier">resolveMake</span><span> =
+    </span><span class="keyword">super</span><span>.</span><span class="identifier">resolveMake</span><span>.</span><span class="identifier">mapValidateInput</span><span>((</span><span class="identifier">input</span><span>: </span><span class="type-name">String</span><span>) =&gt;
+      </span><span class="identifier">input</span><span>.</span><span class="identifier">toLowerCase</span><span>()
+    )
+}
+
+</span><span class="type-name">Email</span><span>(</span><span class="string-literal">&quot;John.Smith@gMail.com&quot;</span><span>)
+</span><span class="comment">// res0: Type = &quot;john.smith@gmail.com&quot;</span></code></pre>
 
         
 <hr class="footer-rule"/>
